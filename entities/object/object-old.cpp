@@ -1,0 +1,214 @@
+#include"object.h"
+
+object::object(vector3d pos,vector3d rot,vector3d scaling, const std::string& path)
+{
+	
+		obj=new objloader();
+		
+		obj->load(path,triangles);
+		
+		position=pos;
+		rotation=rot;
+		scale=scaling;
+		
+	scaleMatrix.setScaling(scale.x, scale.y, scale.z);
+    translationMatrix.setTranslation(position.x, position.y, position.z);
+    rotationMatrixX.setRotationX(rotation.x);
+    rotationMatrixY.setRotationY(rotation.y);
+    rotationMatrixZ.setRotationZ(rotation.z);
+    
+
+// Stocke dans ton objet la boîte calculée
+
+}
+
+object::object(vector3d pos,vector3d rot,vector3d scaling,object* baseModel)
+{
+
+     position = pos;
+    rotation = rot;
+    scale = scaling;
+
+    scaleMatrix.setScaling(scale.x, scale.y, scale.z);
+    translationMatrix.setTranslation(position.x, position.y, position.z);
+    rotationMatrixX.setRotationX(rotation.x);
+    rotationMatrixY.setRotationY(rotation.y);
+    rotationMatrixZ.setRotationZ(rotation.z);
+
+    // Données partagées
+    obj = baseModel->obj; // On ne recharge pas l'obj — on copie juste le pointeur
+    triangles = baseModel->triangles; // Copie du mesh (par valeur ici, possible si immutable)
+    
+
+}
+
+object::~object()
+{
+
+	  delete obj;
+}
+
+
+void object::computeAABB() {
+	
+aabbMin = { FLT_MAX, FLT_MAX, FLT_MAX };
+    aabbMax = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
+
+    Matrix4x4 modelMatrix = translationMatrix * rotationMatrixX * rotationMatrixY * rotationMatrixZ * scaleMatrix;
+
+    for (const auto& tri : triangles) {
+        for (const auto& v : { tri.v1, tri.v2, tri.v3 }) {
+            vector3d worldV = modelMatrix.apply(v);
+
+            aabbMin.x = std::min(aabbMin.x, worldV.x);
+            aabbMin.y = std::min(aabbMin.y, worldV.y);
+            aabbMin.z = std::min(aabbMin.z, worldV.z);
+
+            aabbMax.x = std::max(aabbMax.x, worldV.x);
+            aabbMax.y = std::max(aabbMax.y, worldV.y);
+            aabbMax.z = std::max(aabbMax.z, worldV.z);
+        }
+    }
+}
+
+
+vector3d object::getCenter() const {
+    return {
+        (aabbMin.x + aabbMax.x) / 2.0f,
+        (aabbMin.y + aabbMax.y) / 2.0f,
+        (aabbMin.z + aabbMax.z) / 2.0f
+    };
+}
+
+void object::drawAABB(SDL_Renderer* renderer, const Camera& camera,std::vector<Triangle>& allTriangles, int screenWidth, int screenHeight) {
+	
+	Matrix4x4 modelMatrix = translationMatrix * rotationMatrixX * rotationMatrixY * rotationMatrixZ * scaleMatrix;
+	Matrix4x4 viewProjectionMatrix = camera.getProjectionMatrix() * camera.getViewMatrix(camera,1);
+	Matrix4x4 finalMatrix = viewProjectionMatrix  * modelMatrix;
+	
+   vector3d minPos = {FLT_MAX, FLT_MAX, FLT_MAX};
+   vector3d maxPos = {FLT_MIN, FLT_MIN, FLT_MIN};
+	
+	for (const auto& tri : triangles) {
+	    minPos.x = std::min({minPos.x, tri.v1.x, tri.v2.x, tri.v3.x});
+	    minPos.y = std::min({minPos.y, tri.v1.y, tri.v2.y, tri.v3.y});
+	    minPos.z = std::min({minPos.z, tri.v1.z, tri.v2.z, tri.v3.z});
+	
+	    maxPos.x = std::max({maxPos.x, tri.v1.x, tri.v2.x, tri.v3.x});
+	    maxPos.y = std::max({maxPos.y, tri.v1.y, tri.v2.y, tri.v3.y});
+	    maxPos.z = std::max({maxPos.z, tri.v1.z, tri.v2.z, tri.v3.z});
+	    
+	    Triangle transformedTri = tri;
+        transformedTri.v1 = finalMatrix.apply(tri.v1);
+        transformedTri.v2 = finalMatrix.apply(tri.v2);
+        transformedTri.v3 = finalMatrix.apply(tri.v3);
+        transformedTri.avgDepth = (transformedTri.v1.z + transformedTri.v2.z + transformedTri.v3.z) / 3.0f;
+		transformedTri.wireframe = this->wireframe;
+        allTriangles.push_back(transformedTri);
+	
+	}
+}
+
+
+void object::draw(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<Triangle>& allTriangles) {
+
+
+    
+    Matrix4x4 viewProjectionMatrix = camera.getProjectionMatrix() * camera.getViewMatrix(camera,1);
+	Matrix4x4 modelTransform =   translationMatrix *rotationMatrixX *rotationMatrixY * rotationMatrixZ * scaleMatrix;
+	Matrix4x4 finalMatrix = viewProjectionMatrix * modelTransform;
+
+    for (auto& tri : triangles) {
+    	
+    	
+        Triangle transformedTri = tri;
+   
+        transformedTri.v1 = finalMatrix.apply(tri.v1);
+        transformedTri.v2 = finalMatrix.apply(tri.v2);
+        transformedTri.v3 = finalMatrix.apply(tri.v3);
+        transformedTri.avgDepth = (transformedTri.v1.z + transformedTri.v2.z + transformedTri.v3.z) / 3.0f;
+		transformedTri.wireframe = this->wireframe;
+        allTriangles.push_back(transformedTri);
+    }
+    
+     
+    
+}
+
+
+void object::applyMatrix(){
+translationMatrix.setTranslation(position.x, position.y, position.z);
+rotationMatrixX.setRotationX(rotation.x);
+rotationMatrixY.setRotationY(rotation.y);
+rotationMatrixZ.setRotationZ(rotation.z);
+scaleMatrix.setScaling(scale.x,scale.y,scale.z);
+//draw(pRenderer,800,600,camera); // Affichage du modèle
+}
+
+ bool object::isCloseTo( vector3d other,float threshold,vector3d position) const{
+         return (position - other).length() > threshold; // distance Euclidienne
+    }
+    
+
+ vector3d object::getNormal() const {
+        vector3d avgNormal(0, 0, 0);
+        int count = 0;
+
+        for (const auto& tri : triangles) {
+            vector3d normal = (tri.v2 - tri.v1).crossproduct(tri.v3 - tri.v1).normalize();
+            avgNormal = avgNormal + normal;
+            count++;
+        }
+
+        return (count > 0) ? (avgNormal / count).normalize() : vector3d(0, 1, 0); // Valeur par défaut
+    }
+
+
+bool object::isInViewFrustum(const Camera& cam,vector3d position) const {
+    vector3d camToObj = position - cam.getPosition();
+    float dist = camToObj.length();
+    if (dist > 10000.0f) return false; // trop loin
+    return true;
+}
+
+void object::setLocation(vector3d pos)
+{
+	position=pos;
+}
+
+vector3d object::getLocation()
+{
+	return position;
+}
+
+void object::setRotation(vector3d rot)
+{
+	rotation=rot;
+}
+
+Matrix4x4& object::getTranslationMatrix()
+{
+	return translationMatrix;
+}
+
+Matrix4x4& object::getRotationMatrixX()
+{
+	return rotationMatrixX;
+}
+
+Matrix4x4& object::getRotationMatrixY()
+{
+	return rotationMatrixY;
+}    	
+
+Matrix4x4& object::getRotationMatrixZ()
+{
+	return rotationMatrixZ;
+}
+
+Matrix4x4& object::getScaleMatrix()
+{
+	return scaleMatrix;
+}
+
+
