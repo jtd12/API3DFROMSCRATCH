@@ -1,9 +1,0 @@
-EXPORTS
-    _ZN6skybox14drawBackgroundEPjii @1
-    _ZN6skybox6getRotEv @2
-    _ZN6skybox6updateEv @3
-    _ZN6skybox7drawSunEPjiiiii @4
-    _ZN6skyboxC1Ev @5
-    _ZN6skyboxC2Ev @6
-    _ZN6skyboxD1Ev @7
-    _ZN6skyboxD2Ev @8
