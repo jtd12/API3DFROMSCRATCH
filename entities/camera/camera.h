@@ -19,7 +19,7 @@
 #include <algorithm>  // Pour std::swap
 #include"../../maths/matrix.hpp"
 #include"../../maths/vector.h"
-
+#define M_PI 3.14159265358979323846
 
 
 struct CameraComponent
@@ -55,6 +55,9 @@ class Camera {
      	Matrix4x4 getViewMatrix(const Camera& camera,int inv)const;
     	vector3d applyViewMatrix(const vector3d& v, const Camera& camera)const;
      	Matrix4x4 getProjectionMatrix() const;
+     	float getRotationX() const;
+     	float getRotationY() const;
+     	float getRotationZ() const;
      	vector3d getPosition() const;
 		vector3d getTarget();
 		vector3d getUp();

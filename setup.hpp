@@ -28,8 +28,10 @@ class setup
 	drawPixels* pixel;
 	skybox* sky;
 	frameBuffer* buffer;
+	vector3d positionWeapon;
 	std::vector<object*> wheel;
 	std::vector<object*> decor;
+	object* myAnimatedObject;
 	height* heightMap;
 	float gravity;
 	std::vector<object*> collid;

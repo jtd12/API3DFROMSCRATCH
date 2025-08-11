@@ -9,7 +9,25 @@ object::object(vector3d pos,vector3d rot,vector3d scaling, const std::string& pa
 		position=pos;
 		rotation=rot;
 		scale=scaling;
-		
+	scaleMatrix.setScaling(scale.x, scale.y, scale.z);
+    translationMatrix.setTranslation(position.x, position.y, position.z);
+    rotationMatrixX.setRotationX(rotation.x);
+    rotationMatrixY.setRotationY(rotation.y);
+    rotationMatrixZ.setRotationZ(rotation.z);
+	    
+	   for (auto& tri : triangles) {
+    tri.wireframe = wireframe; // Propagation du mode wireframe à chaque triangle	
+}
+}
+
+object::object(vector3d pos,vector3d rot,vector3d scaling, const std::string& path,bool wireframe,int time)
+{
+
+		obj=new objloader();
+		obj->loadAnimation(animationFrames,path,time);
+		position=pos;
+		rotation=rot;
+		scale=scaling;
 	scaleMatrix.setScaling(scale.x, scale.y, scale.z);
     translationMatrix.setTranslation(position.x, position.y, position.z);
     rotationMatrixX.setRotationX(rotation.x);
@@ -59,6 +77,18 @@ void object::update()
 	
 }
 
+
+
+void object::updateAnimation(float deltaTime) {
+    timer += deltaTime;
+    if (timer >= frameTime) {
+        timer = 0.0f;
+        currentFrame++;
+        if (currentFrame >= animationFrames.size())
+            currentFrame = 0;
+    }
+}
+
 vector3d object::getSize() const {
     return {
         aabbMax.x - aabbMin.x,
@@ -99,6 +129,22 @@ vector3d object::getCenter() const {
     };
 }
 
+
+void object::drawAnimatedObject(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<Triangle>& allTriangles) {
+    Matrix4x4 viewProjectionMatrix = camera.getProjectionMatrix() * camera.getViewMatrix(camera, 1);
+    Matrix4x4 modelTransform = translationMatrix * rotationMatrixX * rotationMatrixY * rotationMatrixZ * scaleMatrix;
+    Matrix4x4 finalMatrix = viewProjectionMatrix * modelTransform;
+
+    for (auto& tri : animationFrames[currentFrame]) {
+        Triangle transformedTri = tri;
+        transformedTri.v1 = finalMatrix.apply(tri.v1);
+        transformedTri.v2 = finalMatrix.apply(tri.v2);
+        transformedTri.v3 = finalMatrix.apply(tri.v3);
+        transformedTri.avgDepth = (transformedTri.v1.z + transformedTri.v2.z + transformedTri.v3.z) / 3.0f;
+
+        allTriangles.push_back(transformedTri);
+    }
+}
 
 void object::draw(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<Triangle>& allTriangles) {
 

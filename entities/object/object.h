@@ -22,17 +22,22 @@ public:
     }
 };
 
+
+
 class object
 {
 	public:
 		object(vector3d pos,vector3d rot,vector3d scaling,const std::string& path,bool wireframe);
 		object(vector3d pos,vector3d rot,vector3d scaling,object* baseModel);
+		object(vector3d pos,vector3d rot,vector3d scaling, const std::string& path,bool wireframe,int time);
 		~object();
 		void update(std::vector<Triangle>& triangles);
 		void applyMatrix();
 		void update();
+		void updateAnimation(float deltaTime);
 		bool cameraInside(const vector3d& camPos) const;
 		void draw(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<Triangle>& allTriangles);
+		void drawAnimatedObject(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<Triangle>& allTriangles);
     	std::vector<Triangle> triangles;
     	void drawAABB(SDL_Renderer* renderer, const Camera& camera,std::vector<Triangle>& allTriangles, int screenWidth, int screenHeigh);
     	vector3d getNormal() const;
@@ -68,8 +73,11 @@ class object
 		vec vecteur;
 	vector3d aabbMin;
 	vector3d aabbMax;
-
+    unsigned int currentFrame = 0;     // frame en cours
+    float frameTime = 0.1f;            // temps par frame
+    float timer = 0.0f;                // accumulateur de temps
 	AABB* boundingBox;
+	std::vector<std::vector<Triangle>> animationFrames;
 	
 };
 #endif

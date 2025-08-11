@@ -52,7 +52,11 @@ int faceCount = 0;
         else if (type == "mtllib") {  // Charger le fichier de matériaux
     std::string mtlFilename;
     ss >> mtlFilename;
-    loadMaterials("data/" + mtlFilename, materials);
+    
+    std::string objPath=path;
+    std::string baseDir = getDirectory(objPath);
+	std::string mtlPath = baseDir +  mtlFilename;
+    loadMaterials(mtlPath, materials);
 } else if (type == "usemtl") {  // Assigner un matériau aux faces suivantes
     ss >> currentMaterial;
 } 
@@ -139,6 +143,16 @@ else if (type == "f") {
 
 bool objloader::loadMaterials(const std::string& mtlPath, std::map<std::string, Material>& materials) {
 	
+    // On récupère le dossier du fichier MTL
+    std::string baseDir;
+    size_t pos = mtlPath.find_last_of("/\\");
+    if (pos != std::string::npos) {
+        baseDir = mtlPath.substr(0, pos + 1); // Inclut le slash
+    } else {
+        baseDir = "";
+    }
+
+    
     std::ifstream file(mtlPath);
     if (!file.is_open()) {
         std::cerr << "Erreur : Impossible d'ouvrir " << mtlPath << std::endl;
@@ -161,7 +175,8 @@ bool objloader::loadMaterials(const std::string& mtlPath, std::map<std::string, 
         } else if (type == "map_Kd") {
     ss >> materials[currentMaterial].texturePath;
 
-    std::string fullPath = "data/" + materials[currentMaterial].texturePath;
+    std::string fullPath = baseDir + materials[currentMaterial].texturePath;
+    
     SDL_Surface* surface = SDL_LoadBMP(fullPath.c_str());
     if (!surface) {
         std::cerr << "Erreur chargement texture : " << fullPath << " -> " << SDL_GetError() << std::endl;
@@ -212,6 +227,27 @@ void objloader::smoothNormals(std::vector<Triangle>& triangles, std::vector<vect
     }
 }
 
+
+void objloader::loadAnimation(std::vector<std::vector<Triangle>>& frames,
+                              const std::string& filename,
+                              unsigned int num)
+{
+    char tmp[200];
+    for (unsigned int i = 0; i <= num; i++)
+    {
+        if (i < 10) sprintf(tmp, "_00000%d", i);
+        else if (i < 100) sprintf(tmp, "_0000%d", i);
+        else if (i < 1000) sprintf(tmp, "_000%d", i);
+        else if (i < 10000) sprintf(tmp, "_00%d", i);
+        else if (i < 100000) sprintf(tmp, "_0%d", i);
+        else sprintf(tmp, "_%d", i);
+
+        std::string path = filename + tmp + ".obj";
+        std::vector<Triangle> tris;
+        load(path, tris); // charge dans un nouveau vecteur
+        frames.push_back(std::move(tris));
+    }
+}
 
 
 

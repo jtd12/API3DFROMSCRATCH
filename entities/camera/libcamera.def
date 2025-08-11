@@ -58,44 +58,49 @@ EXPORTS
     _ZN9Matrix4x4C2Ev @57
     _ZNK6Camera10getForwardEv @58
     _ZNK6Camera11getPositionEv @59
-    _ZNK6Camera13getViewMatrixERKS_i @60
-    _ZNK6Camera14getOrientationER8vector3dS1_S1_ @61
-    _ZNK6Camera15applyViewMatrixERK8vector3dRKS_ @62
-    _ZNK6Camera19getProjectionMatrixEv @63
-    _ZNK6Camera8getRightEv @64
-    _ZNK8vector3d10dotproductERKS_ @65
-    _ZNK8vector3d3dotERKS_S1_ @66
-    _ZNK8vector3d5crossERKS_S1_ @67
-    _ZNK8vector3deqERKS_ @68
-    _ZNK8vector3dixEi @69
-    _ZNK8vector3dltERKS_ @70
-    _ZNK8vector3dmiERKS_ @71
-    _ZNK8vector3dmlERKf @72
-    _ZNK8vector3dplERKS_ @73
-    _ZNK8vector4d9normalizeEv @74
-    _ZNK8vector4dmiERKS_ @75
-    _ZNK8vector4dmlEf @76
-    _ZNK8vector4dplERKS_ @77
-    _ZNK9Matrix4x410multiply4dERK8vector3d @78
-    _ZNK9Matrix4x410multiply4dERK8vector4d @79
-    _ZNK9Matrix4x415transformVectorERK8vector3d @80
-    _ZNK9Matrix4x45applyERK8vector3d @81
-    _ZNK9Matrix4x47inverseEv @82
-    _ZNK9Matrix4x48multiplyERK8vector3d @83
-    _ZNK9Matrix4x4mlERK8vector3d @84
-    _ZNK9Matrix4x4mlERKS_ @85
-    _ZSt3absf @86
-    _ZSt3cosf @87
-    _ZSt3sinf @88
-    _ZSt3tanf @89
-    _ZSt4moveIRfEONSt16remove_referenceIT_E4typeEOS2_ @90
-    _ZSt4sqrtf @91
-    _ZSt4swapIfEvRT_S1_ @92
-    _ZTISt11logic_error @93 DATA
-    _ZTISt12out_of_range @94 DATA
-    _ZTISt9exception @95 DATA
-    _ZTSSt11logic_error @96 DATA
-    _ZTSSt12out_of_range @97 DATA
-    _ZTSSt9exception @98 DATA
-    _ZlsRSo8vector3d @99
-    cam @100 DATA
+    _ZNK6Camera12getRotationXEv @60
+    _ZNK6Camera12getRotationYEv @61
+    _ZNK6Camera12getRotationZEv @62
+    _ZNK6Camera13getViewMatrixERKS_i @63
+    _ZNK6Camera14getOrientationER8vector3dS1_S1_ @64
+    _ZNK6Camera15applyViewMatrixERK8vector3dRKS_ @65
+    _ZNK6Camera19getProjectionMatrixEv @66
+    _ZNK6Camera8getRightEv @67
+    _ZNK8vector3d10dotproductERKS_ @68
+    _ZNK8vector3d3dotERKS_S1_ @69
+    _ZNK8vector3d5crossERKS_S1_ @70
+    _ZNK8vector3deqERKS_ @71
+    _ZNK8vector3dixEi @72
+    _ZNK8vector3dltERKS_ @73
+    _ZNK8vector3dmiERKS_ @74
+    _ZNK8vector3dmlERKf @75
+    _ZNK8vector3dplERKS_ @76
+    _ZNK8vector4d9normalizeEv @77
+    _ZNK8vector4dmiERKS_ @78
+    _ZNK8vector4dmlEf @79
+    _ZNK8vector4dplERKS_ @80
+    _ZNK9Matrix4x410multiply4dERK8vector3d @81
+    _ZNK9Matrix4x410multiply4dERK8vector4d @82
+    _ZNK9Matrix4x415transformVectorERK8vector3d @83
+    _ZNK9Matrix4x45applyERK8vector3d @84
+    _ZNK9Matrix4x47inverseEv @85
+    _ZNK9Matrix4x48multiplyERK8vector3d @86
+    _ZNK9Matrix4x4mlERK8vector3d @87
+    _ZNK9Matrix4x4mlERKS_ @88
+    _ZSt3absf @89
+    _ZSt3cosf @90
+    _ZSt3sinf @91
+    _ZSt3tanf @92
+    _ZSt4asinf @93
+    _ZSt4moveIRfEONSt16remove_referenceIT_E4typeEOS2_ @94
+    _ZSt4sqrtf @95
+    _ZSt4swapIfEvRT_S1_ @96
+    _ZSt5atan2ff @97
+    _ZTISt11logic_error @98 DATA
+    _ZTISt12out_of_range @99 DATA
+    _ZTISt9exception @100 DATA
+    _ZTSSt11logic_error @101 DATA
+    _ZTSSt12out_of_range @102 DATA
+    _ZTSSt9exception @103 DATA
+    _ZlsRSo8vector3d @104
+    cam @105 DATA

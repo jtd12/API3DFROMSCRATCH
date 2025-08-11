@@ -28,7 +28,11 @@
 using namespace std;
 
 
-
+std::string getDirectory(const std::string& filepath) {
+    size_t pos = filepath.find_last_of("/\\");
+    if (pos == std::string::npos) return "";
+    return filepath.substr(0, pos + 1);
+}
 
 class objloader {
 AABB box;
@@ -38,7 +42,9 @@ public:
 	void smoothNormals(std::vector<Triangle>& triangles, std::vector<vector3d>& vertexNormals, int numVertices);
 	 bool loadMaterials(const std::string& mtlPath, std::map<std::string, Material>& materials);
      bool load(const std::string& path,std::vector<Triangle>& triangles);
-
+	 void loadAnimation(std::vector<std::vector<Triangle>>& frames,
+                              const std::string& filename,
+                              unsigned int num);
   /*  void draw(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera,Matrix4x4 translationMatrix, Matrix4x4 scaleMatrix, Matrix4x4 rotationMatrixX, 
 Matrix4x4 rotationMatrixY,Matrix4x4 rotationMatrixZ,std::vector<Triangle> triangles);*/
    

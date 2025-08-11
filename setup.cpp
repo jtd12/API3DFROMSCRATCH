@@ -53,7 +53,7 @@
     object* model2 = new object(vector3d(0,0,0),vector3d(0,0,0), vector3d(15,15,15), "data/voiture2.obj",false);
 
     for (int i = 0; i < 6; ++i) {
-        vector3d pos=vector3d(-900-(i * 5800.0f), 100.0f,5000-(i* 400.0f));
+        vector3d pos=vector3d(-900-(i * 5800.0f), -3000.0f,5000-(i* 400.0f));
         vector3d rot(0.0f, i * 10.0f, 0.0f);
 
         object* baseModel = (i % 2 == 0) ? model1 : model2;
@@ -72,13 +72,14 @@
     }
 }
 	
-	camera=Camera(vector3d(50,-1200,-8000),vector3d(2,0,0),vector3d(0,-1,0));
+	camera=Camera(vector3d(150,-10,-8000),vector3d(0,0,0),vector3d(0,-1,0));
 //camera=Camera(vector3d(10,-10,50),vector3d(0,0,0),vector3d(0,-1,0));
 	sky=new skybox();
 	
 	heightMap=new height();
 	heightMap->loadHeightMap("data/Heightmap2.bmp");
-	
+
+	myAnimatedObject=new object(vector3d(0,0,0), vector3d(0, 0, 0), vector3d(3, 3, 3), "data/animations/arme",false,100);
 	
 	speed=.5f;
 	}
@@ -95,32 +96,8 @@
      testPos = oldPos;
     
     // On copie la position courante
-    moved=false;
 	
-		if (g->getGame()->getKeys()[SDL_SCANCODE_Z])
-		{
-			//std::cout<<"topuch w"<<std::endl;
-		testPos = oldPos +	camera.getForward() * (speed * deltaTime);
-			moved = true;
-		}
-			if (g->getGame()->getKeys()[SDL_SCANCODE_S])
-		{
-		moved = true;
-		testPos = oldPos -	camera.getForward() * (speed * deltaTime);
-		}
-		
-		if (g->getGame()->getKeys()[SDL_SCANCODE_Q])
-		{
-		moved = true;
-		testPos = oldPos -	camera.getRight() * (speed * deltaTime);
-		}
-		
-		if (g->getGame()->getKeys()[SDL_SCANCODE_D])
-		{
-			moved = true;
-		testPos = oldPos +	camera.getRight() * (speed * deltaTime);
-		}
-		
+	
 		int dx,dy;
 		float sensitivity = 0.1f; 
 		
@@ -153,6 +130,17 @@
 
 	void setup::update(std::vector<object*>& vehicule,setup* g)
 	{
+		
+		
+
+
+		myAnimatedObject->getTranslationMatrix().setTranslation((camera.getPosition().x*-1),camera.getPosition().y*-1,camera.getPosition().z*-1);
+		myAnimatedObject->getRotationMatrixX().setRotationX(-camera.getRotationX()* (M_PI/180.0f));
+		myAnimatedObject->getRotationMatrixY().setRotationY(-camera.getRotationY()* (M_PI/180.0f));
+		myAnimatedObject->getRotationMatrixZ().setRotationZ(-camera.getRotationZ()* (M_PI/180.0f));
+		myAnimatedObject->updateAnimation(5.0f);
+	
+		
 		for(int i=0;i<vehicule.size();i++)
 {
 	position[i].y-=100.0f;
@@ -298,6 +286,8 @@ for (int i = 0; i < 4; i++) {
 	 
 	 
 	 heightMap->getTranslationMatrix().setTranslation(-100000,-21800,-100000);
+	 
+	 myAnimatedObject->drawAnimatedObject(renderer,screenWidth, screenHeight, camera, allTriangles);
     
 }
 

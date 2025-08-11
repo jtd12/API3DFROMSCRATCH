@@ -256,3 +256,27 @@ vector3d Camera::getRight() const {
     return getForward().cross(getForward(), up).normalize();
 }
 
+float Camera::getRotationX() const {
+    // Pitch : rotation haut/bas
+    vector3d forward = (target - position).normalize();
+    float pitch = asin(forward.y);
+    return pitch * (180.0f / M_PI); // conversion en degrés
+}
+
+float Camera::getRotationY() const {
+    // Yaw : rotation gauche/droite
+    vector3d forward = (target - position).normalize();
+    float yaw = atan2(forward.x, forward.z);
+    return yaw * (180.0f / M_PI); // conversion en degrés
+}
+
+float Camera::getRotationZ() const {
+    // Roll : inclinaison gauche/droite
+    vector3d forward = (target - position).normalize();
+    vector3d right = forward.cross(forward, up).normalize();
+    vector3d recalculatedUp = right.cross(right, forward).normalize();
+    float roll = atan2(recalculatedUp.x, recalculatedUp.y);
+    return roll * (180.0f / M_PI); // conversion en degrés
+}
+
+
