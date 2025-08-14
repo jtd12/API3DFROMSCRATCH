@@ -20,6 +20,12 @@ inline std::ostream& operator<<(std::ostream& os, const Point2D& p) {
     return os;
 }
 
+struct AnimationRange {
+    int startFrame;
+    int endFrame;
+};
+
+
 class setup
 {
 	
@@ -34,6 +40,7 @@ class setup
 	object* myAnimatedObject;
 	height* heightMap;
 	float gravity;
+	float gravityCamera;
 	std::vector<object*> collid;
 	Matrix4x4 rotationMatrixY;
 	std::vector<vector3d> rotation;
@@ -44,7 +51,34 @@ class setup
     vector3d testPos;
     bool moved;	
 	float speed; // unités / seconde
-	
+	std::vector<AnimationRange> animations = {
+        {0, 50},
+        {0, 60},
+        {25, 70},
+        {50, 90},
+        {50, 90},
+        {50, 90},
+        {50, 90},
+        /*{100, 150},
+        {150, 200},
+        {150, 200},
+        {150, 200},
+        {150, 200},
+        {150, 200},
+        {200,220},
+        {220,260},
+        {220,260},
+        {220,260},
+        {220,260},
+        {220,260},
+        {220,260},
+        {220,260}*/
+    };
+    
+    float changeTimer = 0.0f;
+	float changeInterval = 90.0f; // toutes les 5 secondes
+	int currentStartFrame = 0;
+	int currentEndFrame = 260;
 
 	public:
 		setup();

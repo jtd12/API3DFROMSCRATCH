@@ -48,6 +48,8 @@ class Camera {
         
         void getOrientation(vector3d& forward, vector3d& right, vector3d& up) const; 
 	    void moveForward(float speed);
+	    void moveForwardSimple(float speed);
+	    void moveRightSimple(float speed);
 	    void moveRight(float speed);
 	    void moveUp(float speed);
      	void rotateYaw(float angle);
@@ -63,6 +65,7 @@ class Camera {
 		vector3d getUp();
 		void updateAngles(float pitchDelta, float yawDelta);
 		void setPosition(vector3d pos);
+		void setGravity(float gravity,float limit);
 		void setTarget(vector3d pos);
 		void setUp(vector3d pos);
 		float getYaw();

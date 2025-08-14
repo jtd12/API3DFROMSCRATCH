@@ -18,6 +18,16 @@ void Camera::setPosition(vector3d pos)
  	position=pos;
  }
  
+ void Camera::setGravity(float gravity,float limit)
+ {
+ 	position.y-=gravity;
+ 	if(position.y>limit)
+ 	{
+ 		position.y=limit;
+	 }
+ }
+ 
+ 
 void Camera::setTarget(vector3d pos)
 {
 target=pos;			
@@ -198,6 +208,26 @@ Matrix4x4 Camera::getProjectionMatrix() const {
         vector3d forward = (target - position);
 		vector3d::normalise(forward);
         vector3d right = up.cross(up,forward);
+		vector3d::normalise(right);
+        position = position + right * speed;
+        target = target + right * speed;
+    }
+
+
+	void Camera::moveForwardSimple(float speed) {
+        vector3d forward = (target - position);
+        forward.y = 0;
+		vector3d::normalise(forward);
+        position = position + forward * speed;
+        target = target + forward * speed;
+    }
+
+    void Camera::moveRightSimple(float speed) {
+        vector3d forward = (target - position);
+        forward.y = 0;
+		vector3d::normalise(forward);
+        vector3d right = up.cross(up,forward);
+        right.y = 0;
 		vector3d::normalise(right);
         position = position + right * speed;
         target = target + right * speed;

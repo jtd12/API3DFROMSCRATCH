@@ -79,13 +79,17 @@ void object::update()
 
 
 
-void object::updateAnimation(float deltaTime) {
+void object::updateAnimation(float deltaTime,float speed, int startFrame, int endFrame) {
     timer += deltaTime;
     if (timer >= frameTime) {
         timer = 0.0f;
-        currentFrame++;
-        if (currentFrame >= animationFrames.size())
-            currentFrame = 0;
+
+        currentFrame += speed;
+
+        if (currentFrame > endFrame)
+            currentFrame = startFrame;
+        if (currentFrame < startFrame)
+            currentFrame = endFrame;
     }
 }
 
@@ -197,6 +201,14 @@ bool object::isInViewFrustum(const Camera& cam,vector3d position) const {
     float dist = camToObj.length();
     if (dist > 10000.0f) return false; // trop loin
     return true;
+}
+
+void object::setCurrentFrame(int frame) {
+    currentFrame = frame;
+}
+
+int object::getCurrentFrame() const {
+    return currentFrame;
 }
 
 void object::setLocation(vector3d pos)

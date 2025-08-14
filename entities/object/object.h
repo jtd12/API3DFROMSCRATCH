@@ -34,7 +34,7 @@ class object
 		void update(std::vector<Triangle>& triangles);
 		void applyMatrix();
 		void update();
-		void updateAnimation(float deltaTime);
+		void updateAnimation(float deltaTime,float speed, int startFrame, int endFrame);
 		bool cameraInside(const vector3d& camPos) const;
 		void draw(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<Triangle>& allTriangles);
 		void drawAnimatedObject(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<Triangle>& allTriangles);
@@ -57,6 +57,8 @@ class object
 		AABB aabb;
 		AABB* getBoundingBox();
 		vector3d getSize() const;
+		void setCurrentFrame(int frame);
+    	int getCurrentFrame() const; // optionnel si tu veux lire la valeur
 	
 	private:
 		

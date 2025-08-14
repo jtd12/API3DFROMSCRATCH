@@ -25,18 +25,18 @@
 	{
 	//position=vector3d(0,0,0);
 	//position2=vector3d(20,0,50);
-
+ 
 	pixel=new drawPixels();
 	buffer=new frameBuffer();
 	
-	for(int i=0;i<4;i++)
+	for(int i=0;i<5;i++)
 	{
 	std::string filename = "data/decor" + std::to_string(i) + ".obj";
 	std::cout<<"i:"<<std::to_string(i)<<std::endl;
 	decor.push_back(new object(vector3d(0,0,-3000), vector3d(0,0,0), vector3d(5,5,5), filename,false));
 	}
 	
-	gravity=1.0f;
+	gravity=200.0f;
 	
 	for(int i=0;i<5;i++)
 	{
@@ -53,7 +53,7 @@
     object* model2 = new object(vector3d(0,0,0),vector3d(0,0,0), vector3d(15,15,15), "data/voiture2.obj",false);
 
     for (int i = 0; i < 6; ++i) {
-        vector3d pos=vector3d(-900-(i * 5800.0f), -3000.0f,5000-(i* 400.0f));
+        vector3d pos=vector3d(-3700-(i * 5800.0f), -3000.0f,5000-(i* 400.0f));
         vector3d rot(0.0f, i * 10.0f, 0.0f);
 
         object* baseModel = (i % 2 == 0) ? model1 : model2;
@@ -72,16 +72,19 @@
     }
 }
 	
-	camera=Camera(vector3d(150,-10,-8000),vector3d(0,0,0),vector3d(0,-1,0));
+	camera=Camera(vector3d(100,-1000,-7000),vector3d(0,0,0),vector3d(0,-1,0));
 //camera=Camera(vector3d(10,-10,50),vector3d(0,0,0),vector3d(0,-1,0));
 	sky=new skybox();
 	
 	heightMap=new height();
 	heightMap->loadHeightMap("data/Heightmap2.bmp");
 
-	myAnimatedObject=new object(vector3d(0,0,0), vector3d(0, 0, 0), vector3d(3, 3, 3), "data/animations/arme",false,100);
+	myAnimatedObject=new object(vector3d(0,0,0), vector3d(0, 0, 0), vector3d(3, 3, 3), "data/animations/arme",false,260);
 	
 	speed=.5f;
+	
+    gravityCamera=-200.0f;
+    
 	}
 	
 	
@@ -131,31 +134,56 @@
 	void setup::update(std::vector<object*>& vehicule,setup* g)
 	{
 		
-		
-
+		std::srand(std::time(nullptr));
+//std::cout<<"changeTimer"<<changeTimer<<std::endl;
 
 		myAnimatedObject->getTranslationMatrix().setTranslation((camera.getPosition().x*-1),camera.getPosition().y*-1,camera.getPosition().z*-1);
 		myAnimatedObject->getRotationMatrixX().setRotationX(-camera.getRotationX()* (M_PI/180.0f));
 		myAnimatedObject->getRotationMatrixY().setRotationY(-camera.getRotationY()* (M_PI/180.0f));
 		myAnimatedObject->getRotationMatrixZ().setRotationZ(-camera.getRotationZ()* (M_PI/180.0f));
-		myAnimatedObject->updateAnimation(5.0f);
+
+		for (int frame = 0; frame < 260; ++frame) {
+	    float deltaTime = 0.016f; // ~60 FPS
+	    changeTimer += deltaTime;
+	    //std::cout<<"changeTimer"<<changeTimer<<std::endl;
 	
-		
-		for(int i=0;i<vehicule.size();i++)
-{
-	position[i].y-=100.0f;
+	    // Toutes les X secondes ? choisir une nouvelle animation
+	    if (changeTimer >= changeInterval) {
+	        changeTimer = 0.0f;
+	        int randomIndex = std::rand() % animations.size();
+	        currentStartFrame = animations[randomIndex].startFrame;
+	        currentEndFrame = animations[randomIndex].endFrame;
+	        myAnimatedObject->setCurrentFrame(currentStartFrame); // on démarre depuis le début
+	    }
 	
-	if(position[i].y< -5000.0f)
-	{
-		position[i].y=-5000.0f;
+	    // On met à jour l’animation courante à chaque frame
+	    myAnimatedObject->updateAnimation(1.0f, 1.0f,
+	        currentStartFrame,
+	        currentEndFrame
+	    );
 	}
-}
+	    
+    
+		for(int i=0;i<vehicule.size();i++)
+		{
+			position[i].y-=gravity;
+			
+			if(position[i].y< -6500.0f)
+			{
+				position[i].y=-6500.0f;
+			}
+		}
 
 		vector3d cameraVelocity; // vitesse de déplacement (x, y, z)
 		float dampingFactor = 5.0f; // plus c'est haut, plus l'arrêt est rapide
 		float sizeObject=9000.0f;
-		float deltaTime = .3f;
+		float deltaTime = .1f;
 		bool collisionDetected = false;
+		
+		camera.setGravity(-800,3000);
+	
+		
+		
 
 for (int i = 0; i < collid.size(); i++) {
     collid[i]->computeAABB();
@@ -177,13 +205,13 @@ for (int i = 0; i < collid.size(); i++) {
 if (!collisionDetected) {
     // Pas de collision détectée, on peut déplacer la caméra
     if (g->getGame()->getKeys()[SDL_SCANCODE_Z])
-        camera.moveForward(speed * deltaTime);
+        camera.moveForwardSimple(speed * deltaTime);
     if (g->getGame()->getKeys()[SDL_SCANCODE_S])
-        camera.moveForward(-speed * deltaTime);
+        camera.moveForwardSimple(-speed * deltaTime);
     if (g->getGame()->getKeys()[SDL_SCANCODE_Q])
-        camera.moveRight(-speed * deltaTime);
+        camera.moveRightSimple(-speed * deltaTime);
     if (g->getGame()->getKeys()[SDL_SCANCODE_D])
-        camera.moveRight(speed * deltaTime);
+        camera.moveRightSimple(speed * deltaTime);
 
     std::cout << "Pas de collision" << std::endl;
 } else {
@@ -209,9 +237,9 @@ if (!collisionDetected) {
 
 	void setup::draw(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<object*>& vehicule)
 {
-cam.fov=80.0f * (M_PI / 180.0f);
+cam.fov=60.0f * (M_PI / 180.0f);
 cam.aspect=static_cast<float>(800) / static_cast<float>(600);
-cam.near=1.0f;
+cam.near=10.0f;
 cam.far=1000.0f;
 
 
