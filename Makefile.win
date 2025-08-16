@@ -4,12 +4,12 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = test.o setup.o
-LINKOBJ  = test.o setup.o
-LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -lmingw32  maths/vector.a maths/matrix.a collision/libboundingBox.a entities/camera/libcamera.a loader/libloader.a gameEngine/libgameLoop.a entities/object/libobject.a gameEngine/libCopyBuffer.a pixel/libdrawPixels.a pixel/libpixel.a entities/sky/libsky.a entities/heightmap/libheightmap.a
+OBJ      = setup.o main.o camera.o collision.o decor.o heightmap.o player.o vehicules.o
+LINKOBJ  = setup.o main.o camera.o collision.o decor.o heightmap.o player.o vehicules.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -lmingw32 force3D/maths/vector.a force3D/maths/matrix.a force3D/collision/libboundingBox.a force3D/entities/camera/libcamera.a force3D/loader/libloader.a force3D/gameEngine/libgameLoop.a force3D/entities/object/libobject.a force3D/gameEngine/libCopyBuffer.a force3D/pixel/libdrawPixels.a force3D/pixel/libpixel.a force3D/entities/sky/libsky.a force3D/entities/heightmap/libheightmap.a
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
-BIN      = test.exe
+BIN      = Projet1.exe
 CXXFLAGS = $(CXXINCS) -std=c++11
 CFLAGS   = $(INCS) 
 RM       = rm.exe -f
@@ -24,8 +24,26 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-test.o: test.cpp
-	$(CPP) -c test.cpp -o test.o $(CXXFLAGS)
-
 setup.o: setup.cpp
 	$(CPP) -c setup.cpp -o setup.o $(CXXFLAGS)
+
+main.o: main.cpp
+	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+
+camera.o: camera.cpp
+	$(CPP) -c camera.cpp -o camera.o $(CXXFLAGS)
+
+collision.o: collision.cpp
+	$(CPP) -c collision.cpp -o collision.o $(CXXFLAGS)
+
+decor.o: decor.cpp
+	$(CPP) -c decor.cpp -o decor.o $(CXXFLAGS)
+
+heightmap.o: heightmap.cpp
+	$(CPP) -c heightmap.cpp -o heightmap.o $(CXXFLAGS)
+
+player.o: player.cpp
+	$(CPP) -c player.cpp -o player.o $(CXXFLAGS)
+
+vehicules.o: vehicules.cpp
+	$(CPP) -c vehicules.cpp -o vehicules.o $(CXXFLAGS)

@@ -28,7 +28,7 @@
 using namespace std;
 
 
-std::string getDirectory(const std::string& filepath) {
+inline std::string getDirectory(const std::string& filepath) {
     size_t pos = filepath.find_last_of("/\\");
     if (pos == std::string::npos) return "";
     return filepath.substr(0, pos + 1);

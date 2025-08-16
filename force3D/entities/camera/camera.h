@@ -19,7 +19,7 @@
 #include <algorithm>  // Pour std::swap
 #include"../../maths/matrix.hpp"
 #include"../../maths/vector.h"
-#define M_PI 3.14159265358979323846
+
 
 
 struct CameraComponent
