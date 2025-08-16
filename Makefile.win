@@ -4,8 +4,8 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = setup.o main.o camera.o collision.o decor.o heightmap.o player.o vehicules.o
-LINKOBJ  = setup.o main.o camera.o collision.o decor.o heightmap.o player.o vehicules.o
+OBJ      = setup.o main.o common/camera.o common/collision.o common/decor.o common/heightmap.o common/player.o common/vehicules.o
+LINKOBJ  = setup.o main.o common/camera.o common/collision.o common/decor.o common/heightmap.o common/player.o common/vehicules.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -lmingw32 force3D/maths/vector.a force3D/maths/matrix.a force3D/collision/libboundingBox.a force3D/entities/camera/libcamera.a force3D/loader/libloader.a force3D/gameEngine/libgameLoop.a force3D/entities/object/libobject.a force3D/gameEngine/libCopyBuffer.a force3D/pixel/libdrawPixels.a force3D/pixel/libpixel.a force3D/entities/sky/libsky.a force3D/entities/heightmap/libheightmap.a
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
@@ -30,20 +30,20 @@ setup.o: setup.cpp
 main.o: main.cpp
 	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
 
-camera.o: camera.cpp
-	$(CPP) -c camera.cpp -o camera.o $(CXXFLAGS)
+common/camera.o: common/camera.cpp
+	$(CPP) -c common/camera.cpp -o common/camera.o $(CXXFLAGS)
 
-collision.o: collision.cpp
-	$(CPP) -c collision.cpp -o collision.o $(CXXFLAGS)
+common/collision.o: common/collision.cpp
+	$(CPP) -c common/collision.cpp -o common/collision.o $(CXXFLAGS)
 
-decor.o: decor.cpp
-	$(CPP) -c decor.cpp -o decor.o $(CXXFLAGS)
+common/decor.o: common/decor.cpp
+	$(CPP) -c common/decor.cpp -o common/decor.o $(CXXFLAGS)
 
-heightmap.o: heightmap.cpp
-	$(CPP) -c heightmap.cpp -o heightmap.o $(CXXFLAGS)
+common/heightmap.o: common/heightmap.cpp
+	$(CPP) -c common/heightmap.cpp -o common/heightmap.o $(CXXFLAGS)
 
-player.o: player.cpp
-	$(CPP) -c player.cpp -o player.o $(CXXFLAGS)
+common/player.o: common/player.cpp
+	$(CPP) -c common/player.cpp -o common/player.o $(CXXFLAGS)
 
-vehicules.o: vehicules.cpp
-	$(CPP) -c vehicules.cpp -o vehicules.o $(CXXFLAGS)
+common/vehicules.o: common/vehicules.cpp
+	$(CPP) -c common/vehicules.cpp -o common/vehicules.o $(CXXFLAGS)

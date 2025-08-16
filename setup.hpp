@@ -1,11 +1,11 @@
 #ifndef DEF_SETUP_HPP
 #define DEF_SETUP_HPP
-#include"camera.hpp"
-#include"vehicules.hpp"
-#include"player.hpp"
-#include"heightmap.hpp"
-#include"decor.hpp"
-#include"collision.hpp"
+#include"common/camera.hpp"
+#include"common/vehicules.hpp"
+#include"common/player.hpp"
+#include"common/heightmap.hpp"
+#include"common/decor.hpp"
+#include"common/collision.hpp"
 #include"force3D/pixel/drawPixels.hpp"
 #include"force3D/gameEngine/gameLoop.hpp"
 #include"force3D/gameEngine/frameBuffer.hpp"
