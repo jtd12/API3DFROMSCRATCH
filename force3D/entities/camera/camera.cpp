@@ -18,13 +18,10 @@ void Camera::setPosition(vector3d pos)
  	position=pos;
  }
  
- void Camera::setGravity(float gravity,float limit)
+ void Camera::setGravity(float gravity)
  {
  	position.y-=gravity;
- 	if(position.y>limit)
- 	{
- 		position.y=limit;
-	 }
+
  }
  
  

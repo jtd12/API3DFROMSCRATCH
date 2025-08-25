@@ -5,6 +5,7 @@
 #include"camera.hpp"
 
 
+
 struct AnimationRange {
     int startFrame;
     int endFrame;
@@ -65,6 +66,7 @@ class playersetup
 		void setReload(bool f);
 		void setTir(bool f);
 		void setMoved(bool f);
+		object* getMyAnimatedObject();
 };
 
 #endif

@@ -33,9 +33,9 @@ void drawPixels::draw(std::vector<Triangle>& allTriangles,Uint32* framebuffer,fl
         Point2D p3 = pixel_->project(tri.v3, screenWidth, screenHeight);
 
         // Vérification des limites écran
-        if (p1.x < 0 || p1.x >= screenWidth -1 || p1.y < 0 || p1.y >= screenHeight-1 ||
-            p2.x < 0 || p2.x >= screenWidth -1|| p2.y < 0 || p2.y >= screenHeight-1 ||
-            p3.x < 0 || p3.x >= screenWidth-1 || p3.y < 0 || p3.y >= screenHeight-1) {
+        if (p1.x < 0 || p1.x >= screenWidth -0.5f || p1.y < 0|| p1.y >= screenHeight-0.5f ||
+            p2.x < 0 || p2.x >= screenWidth -0.5f|| p2.y < 0 || p2.y >= screenHeight-0.5f ||
+            p3.x < 0 || p3.x >= screenWidth-0.5f || p3.y < 0| p3.y >= screenHeight-0.5f) {
             continue;
         }
 

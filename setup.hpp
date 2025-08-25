@@ -1,6 +1,7 @@
 #ifndef DEF_SETUP_HPP
 #define DEF_SETUP_HPP
 #include"common/camera.hpp"
+#include"common/bullet.hpp"
 #include"common/vehicules.hpp"
 #include"common/player.hpp"
 #include"common/heightmap.hpp"
@@ -15,7 +16,6 @@
 #define HEIGHT 600
 
 
-
 class setup
 {
 	vehiculesetup* vehicules;
@@ -28,13 +28,10 @@ class setup
 	drawPixels* pixel;
 	skybox* sky;
 	frameBuffer* buffer;
-	float gravity;
 	std::vector<object*> collid;
-	bool up,down,right,left;
 	std::vector<Triangle> allTriangles;
-	vector3d oldPos;
-    vector3d testPos;
 	std::vector<object*> vehicule;
+	std::vector<Bullet*> bullets;
 
 	public:
 		setup();

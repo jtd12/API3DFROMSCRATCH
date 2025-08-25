@@ -49,10 +49,12 @@ class object
     	Matrix4x4& getRotationMatrixY();
     	Matrix4x4& getRotationMatrixZ();
     	Matrix4x4& getScaleMatrix();
+    	void setColor(const vector3d& color);
     	void setLocation(vector3d pos);
     	void setRotation(vector3d rot);
     	vector3d getLocation();
-     	void computeAABB(); // déclaration de la méthode
+     	void computeAABB();
+     	bool checkCollisionWithCamera(vector3d camPos, float cameraRadius) const;
      	vector3d getCenter() const;
 		AABB aabb;
 		AABB* getBoundingBox();

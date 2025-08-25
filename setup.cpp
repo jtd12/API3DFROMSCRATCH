@@ -1,6 +1,12 @@
 
 #include"setup.hpp"
 
+
+ float kelvinR[19] ={1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,0.907,0.827,0.762,0.711,0.668,0.632,0.602};
+ float kelvinG[19] ={0.007,0.126,0.234,0.349,0.454,0.549,0.635,0.710,0.778,0.837,0.890,0.937,0.888,0.839,0.800,0.766,0.738,0.714,0.693};
+ float kelvinB[19] ={0.000,0.000,0.010,0.067,0.151,0.254,0.370,0.493,0.620,0.746,0.869,0.988,1.000,1.000,1.000,1.000,1.000,1.000,1.000};
+	 
+	 
 	setup::setup()
 	{
 		game=new gameLoop();
@@ -44,6 +50,8 @@
 	camera=new camerasetup();	
 
 	sky=new skybox();
+	
+	
 
     
 	}
@@ -74,16 +82,27 @@
 	    vehicules->update(vehicule);
 
 		float deltaTime = .1f;
-		bool collisionDetected = false;
+
 		
 		player->update(camera);
-		camera->getCamera()->setGravity(-800,3000);
+	//	camera->getCamera()->setGravity(-800,3000);
 	
 		height->update();
 		
 		decor->update();
 		
 		collision->update(player,camera,deltaTime);
+		
+		for (auto it = bullets.begin(); it != bullets.end();) {
+		    if (!(*it)->update()) {
+		        delete *it;                // libère le mesh
+		        it = bullets.erase(it);    // retire du vecteur
+		    } else {
+		        ++it;
+		    }
+		}
+		
+
 
 	    if (g->getGame()->getKeys()[SDL_SCANCODE_Z])
 	    {
@@ -110,16 +129,8 @@
 			collision->setMoveRight(false);
 			
 		}
-		if (g->getGame()->getKeys()[SDL_SCANCODE_A])
-	    {
-	    collision->setTir(true);
-	        
-	    }
-	    else
-	    {
-	    collision->setTir(false);
-		}
-		
+	
+	    	
 		if (g->getGame()->getKeys()[SDL_SCANCODE_R])
 	    {
 	    collision->setReload(true);
@@ -129,6 +140,25 @@
 	    {
 	    collision->setReload(false);
 		}
+		
+		if (g->getGame()->getKeys()[SDL_SCANCODE_SPACE]) {
+			collision->setTir(true);
+			vector3d startPos = camera->getCamera()->getPosition() + camera->getCamera()->getForward() * 700.0f;
+        	vector3d forward  = camera->getCamera()->getForward();
+		  	bullets.push_back(new Bullet(startPos, forward, 200.0f, 50, "data/balle.obj"));
+	}
+	else
+	    {
+	    collision->setTir(false);
+		}
+		
+		if (g->getGame()->getKeys()[SDL_SCANCODE_LCTRL] != 0)
+		{
+			collision->jump(true);
+		}
+	else {
+    collision->jump(false);
+}
 	
 	}
 	
@@ -145,8 +175,10 @@
 	collision->draw(allTriangles, renderer,screenWidth, screenHeight,camera);
 	
     player->draw(allTriangles,renderer,screenWidth,screenHeight, camera);
-	}
-
+    
+    for(int i=0;i<bullets.size();i++)
+      bullets[i]->draw(allTriangles,renderer,screenWidth,screenHeight, camera);
+}
 
 
 void setup::draw()
@@ -181,6 +213,8 @@ void setup::draw()
 
 
 }
+
+
 
 gameLoop * setup::getGame()
 {

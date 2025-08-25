@@ -19,7 +19,7 @@
 #include <algorithm>  // Pour std::swap
 #include"../../maths/matrix.hpp"
 #include"../../maths/vector.h"
-
+#define M_PI 3.14159265359
 
 
 struct CameraComponent
@@ -65,7 +65,7 @@ class Camera {
 		vector3d getUp();
 		void updateAngles(float pitchDelta, float yawDelta);
 		void setPosition(vector3d pos);
-		void setGravity(float gravity,float limit);
+		void setGravity(float gravity);
 		void setTarget(vector3d pos);
 		void setUp(vector3d pos);
 		float getYaw();

@@ -101,10 +101,37 @@ vector3d object::getSize() const {
     };
 }
 
+bool object::checkCollisionWithCamera(vector3d camPos, float cameraRadius) const {
+		
+        Matrix4x4 modelMatrix = translationMatrix *
+                                rotationMatrixX *
+                                rotationMatrixY *
+                                rotationMatrixZ *
+                                scaleMatrix;
+
+        for (const auto& tri : triangles) {
+            for (const auto& v : { tri.v1, tri.v2, tri.v3 }) {
+                vector3d worldV = modelMatrix.apply(v);
+
+                
+            float dx = worldV.x - camPos.x;
+            float dy = worldV.y - camPos.y;
+            float dz = worldV.z - camPos.z;
+            float distSq = dx*dx + dy*dy + dz*dz;
+
+                if (distSq < cameraRadius * cameraRadius) {
+                	std::cout << "Collision détectée avec vertex: " << worldV << std::endl;
+                    return true; // collision trouvée
+                }
+            }
+        }
+
+        return false; // pas de collision
+    }
 
 void object::computeAABB() {
 	
-aabbMin = { FLT_MAX, FLT_MAX, FLT_MAX };
+	aabbMin = { FLT_MAX, FLT_MAX, FLT_MAX };
     aabbMax = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
 
     Matrix4x4 modelMatrix = translationMatrix * rotationMatrixX * rotationMatrixY * rotationMatrixZ * scaleMatrix;
@@ -177,6 +204,14 @@ scaleMatrix.setScaling(scale.x,scale.y,scale.z);
 //draw(pRenderer,800,600,camera); // Affichage du modèle
 }
 
+
+void object::setColor(const vector3d& color) {
+    for (auto& tri : triangles) {
+        tri.material.diffuseColor = color;
+    }
+}
+    
+    
  bool object::isCloseTo( vector3d other,float threshold,vector3d position) const{
          return (position - other).length() > threshold; // distance Euclidienne
     }

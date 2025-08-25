@@ -9,6 +9,7 @@
 class collisionsetup
 {
 	std::vector<object*> collid;
+	std::vector<object*> collidPlane;
 	vector3d oldPos;
     vector3d testPos;
     bool moveForward;
@@ -17,7 +18,7 @@ class collisionsetup
     bool moveLeft;
 	bool tir;
 	bool reload;
-	
+
 	public:
 	  collisionsetup();
 	  ~collisionsetup();
@@ -29,5 +30,12 @@ class collisionsetup
 	  void setMoveLeft(bool f);
 	  void setReload(bool f);
 	  void setTir(bool f);
+	  void jump(bool f);
+	  	bool fly;
+	  		float velocityY = 0.0f;   // vitesse verticale
+    bool onGround = false;    // si la caméra touche le sol
+    float gravity;
+	
+	//  bool intersect(const Sphere& s, const AABB& b);
 };
 #endif

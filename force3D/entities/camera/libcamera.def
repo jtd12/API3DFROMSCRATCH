@@ -1,5 +1,5 @@
 EXPORTS
-    _ZN6Camera10setGravityEff @1
+    _ZN6Camera10setGravityEf @1
     _ZN6Camera11moveForwardEf @2
     _ZN6Camera11rotatePitchEf @3
     _ZN6Camera11setPositionE8vector3d @4

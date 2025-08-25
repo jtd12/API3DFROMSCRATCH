@@ -93,4 +93,9 @@ void playersetup::setMoved(bool f)
 {
 	moving=f;
 }
+
+object* playersetup::getMyAnimatedObject()
+{
+	return myAnimatedObject;
+}
 		

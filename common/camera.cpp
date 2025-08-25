@@ -2,7 +2,7 @@
 
 camerasetup::camerasetup()
 {
-	camera=new Camera(vector3d(100,-1000,-7000),vector3d(0,0,0),vector3d(0,-1,0));
+	camera=new Camera(vector3d(-3000,-500,-7000),vector3d(0,0,0),vector3d(0,-1,0));
 	sensitivity=0.1f;
 	speed=.5f;
 }

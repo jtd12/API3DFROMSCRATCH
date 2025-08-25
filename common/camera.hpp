@@ -1,7 +1,12 @@
 #ifndef DEF_CAMERA_HPP
 #define DEF_CAMERA_HPP
 #include"../force3D/entities/camera/camera.h"
+#define M_PI 3.141592653589793
 
+struct Sphere {
+    vector3d center;
+    float radius;
+};
 class camerasetup
 {
 	Camera *camera;

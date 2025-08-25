@@ -1,5 +1,5 @@
 # Blender MTL File: 'camionnete02.blend'
-# Material Count: 6
+# Material Count: 3
 
 newmtl Matériau.002
 Ns 225.000000
@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures\\photorealistic_concrete\\concrete022.bmp
+map_Kd decor\\concrete022.bmp
 
 newmtl Matériau.003
 Ns 225.000000
@@ -21,40 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd brick003r.bmp
-
-newmtl Matériau.004
-Ns 225.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.615213 0.754228 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-map_Kd brick080.bmp
-
-newmtl Matériau.006
-Ns 225.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-map_Kd textures\\photorealistic_door\\door063.bmp
-
-newmtl Matériau.007
-Ns 225.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-map_Kd images.bmp
+map_Kd decor\\brick003r.bmp
 
 newmtl None
 Ns 500
