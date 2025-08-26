@@ -12,6 +12,8 @@
 #include"common/collisionDetection.hpp"
 #include"common/GUI.hpp"
 
+
+
 class setup
 {
 	public:
@@ -30,23 +32,20 @@ class setup
 	void drawPixels(std::vector<Triangle>& allTriangles,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera);
 	void drawScene(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera , vehicule& car, std::vector<vehiculeAI*>& carAI,  std::vector<decor*>& sceneDecor
                );
-    void removeCloseDecor( Camera& cam, float threshold);
- 	void restoreDecorFarFrom(Camera& cam, float threshold);
+
  	vector3d computeNormal(const vector3d& v1, const vector3d& v2, const vector3d& v3);
 	bool isTriangleVisible(const vector3d& normal, const vector3d& cameraPosition, const vector3d& trianglePoint);
 	void followCamera(vector3d carPosition, vector3d carForward, float yawInput, float pitchInput);
 	void getOrientationVectors(vector3d& forward, vector3d& right, vector3d& up) const;
 	void handleMouseMovement(float mouseDeltaX, float mouseDeltaY);
 	std::vector<vector3d> generateWaypoints(const std::vector<vector3d>& controlPoints, float spacing);
-
+	void initCars(std::vector<vector3d> waypoints);
+	
 	private:
 	vehicule * car;
 	std::vector<vehiculeAI*> carAI;
 	raceTrack * race;
-	std::vector<decor*> dec;
-	std::vector<decor*>::iterator it;
-    std::vector<decor*> removedDecor; // Liste des véhicules supprimés
-	grid* grid_;
+	std::vector<decor*> cubes;
 	skybox* sky;
 	Camera *camera;
 	bool mouseDown;

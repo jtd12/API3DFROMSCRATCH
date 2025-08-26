@@ -5,11 +5,23 @@ T clamp(T value, T minVal, T maxVal) {
     return (value < minVal) ? minVal : (value > maxVal) ? maxVal : value;
 }
 
+std::unordered_map<std::string, mesh*> ModelManager::models;
 
-  vehiculeAI::vehiculeAI(const std::string&  filename,const std::vector<vector3d>& waypoints,vector3d pos)
+   mesh* ModelManager:: getModel(const std::string& filename) {
+        auto it = models.find(filename);
+        if (it != models.end())
+            return it->second;  // déjà chargé
+
+        mesh* newMesh = new mesh();
+        objloader::load(filename, newMesh->triangles); // charge le fichier OBJ
+        models[filename] = newMesh;
+        return newMesh;
+    }
+
+  vehiculeAI::vehiculeAI(mesh* sharedMesh,const std::vector<vector3d>& waypoints,vector3d pos)
     {
-    	obj=new objloader();
-		obj->load(filename,triangles);
+    	carMesh = sharedMesh;             // réutilise le mesh partagé
+    	triangles = carMesh->triangles;   // copie si nécessaire pour draw
 		waypoints_=(waypoints);
 		currentWaypointIndex=(0);
 		scale=vector3d(50,50,50);
@@ -29,7 +41,7 @@ T clamp(T value, T minVal, T maxVal) {
 	
 		vehiculeAI::~vehiculeAI()
 	{
-		delete obj;
+		delete carMesh;
 	}
 	
 	
@@ -89,17 +101,17 @@ T clamp(T value, T minVal, T maxVal) {
 	
 	std::vector<vector3d> vertexNormals;  // Stockage des normales lissées
 	int numVertices=724;
-	obj->smoothNormals(triangles, vertexNormals,numVertices);
+	//objloader::smoothNormals(triangles, vertexNormals,numVertices);
 
-    for (auto& tri : triangles) {
+    for (auto& tri : carMesh->triangles) {
         Triangle transformedTri = tri;
         transformedTri.v1 = finalMatrix.apply(tri.v1);
         transformedTri.v2 = finalMatrix.apply(tri.v2);
         transformedTri.v3 = finalMatrix.apply(tri.v3);
         
-        transformedTri.n1 = vertexNormals[tri.index1]; // Normale lissée pour le sommet 1
-        transformedTri.n2 = vertexNormals[tri.index2]; // Normale lissée pour le sommet 2
-        transformedTri.n3 = vertexNormals[tri.index3]; // Normale lissée pour le sommet 3
+        //transformedTri.n1 = vertexNormals[tri.index1]; // Normale lissée pour le sommet 1
+        //transformedTri.n2 = vertexNormals[tri.index2]; // Normale lissée pour le sommet 2
+        //transformedTri.n3 = vertexNormals[tri.index3]; // Normale lissée pour le sommet 3
         
         transformedTri.avgDepth = (transformedTri.v1.z + transformedTri.v2.z + transformedTri.v3.z) / 3.0f;
 

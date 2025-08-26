@@ -32,7 +32,8 @@ class decor
     	bool isCloseTo( vector3d other,float threshold) const ;
     	vector3d position;
     	bool isInViewFrustum(const Camera& cam) const;
-
+		vector3d scale;
+				vector3d rotation;
 	private:
 		objloader *obj;
 	
@@ -41,8 +42,8 @@ class decor
 		Matrix4x4 rotationMatrixX;
 		Matrix4x4 rotationMatrixY;
 		Matrix4x4 rotationMatrixZ;
-		vector3d scale;
-		vector3d rotation;
+
+
 		AABB* boundingBox;
 		vec vecteur;
 	

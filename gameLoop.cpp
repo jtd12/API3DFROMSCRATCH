@@ -41,7 +41,8 @@ void gameLoop::inputs()
 
 void gameLoop::loop()
 {
-	
+	SDL_SetWindowSize(pWindow, 1280, 720);
+	SDL_MaximizeWindow(pWindow);
 	bool isOpen{ true };
 	
 	 while (isOpen) {
@@ -51,6 +52,7 @@ void gameLoop::loop()
           inputs();
           
         }
+        
         
       	update();
 		

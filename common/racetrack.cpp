@@ -10,6 +10,8 @@ raceTrack::~raceTrack()
 	
 }
 
+
+
 void raceTrack::initializeTrack(const std::vector<vector3d>& controlPoints, int segmentsPerCurve, float width) {
     std::vector<vector3d> path = generateTrackPath(controlPoints, segmentsPerCurve);
     trackEdges = generateTrackEdges(path, width); // Stocker les bords du circuit
@@ -293,4 +295,32 @@ bool isTrack,bool isBorder) {
                     tV1.z, tV2.z, tV3.z);
 
 }
+
+bool  raceTrack::isPointOnTrack(float x, float z) {
+ 	if (trackEdges.empty()) return false;
+
+    vector3d p(x, 0, z);
+
+    for (size_t i = 0; i < trackEdges.size(); i++) {
+        const vector3d& left = trackEdges[i].first;
+        const vector3d& right = trackEdges[i].second;
+
+        // Centre du segment
+        vector3d center = (left + right) * 0.5f;
+
+        // Largeur du segment
+        float width = (right - left).length();
+
+        // Distance perpendiculaire au segment central
+        float dx = x - center.x;
+        float dz = z - center.z;
+        float dist = sqrt(dx*dx + dz*dz);
+
+        if (dist <= width * 0.5f) {
+            return true; // Point sur la piste
+        }
+    }
+
+    return false; // Point en dehors
+    }
 

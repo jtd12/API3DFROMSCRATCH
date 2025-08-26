@@ -55,6 +55,11 @@ struct Triangle {
 };
 
 
+struct mesh {
+    std::vector<Triangle> triangles;  // tous les triangles du modèle
+};
+
+
 class objloader {
 
 	 

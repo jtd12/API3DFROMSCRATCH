@@ -75,7 +75,7 @@ scaleMatrix.setScaling(scale.x,scale.y,scale.z);
 bool decor::isInViewFrustum(const Camera& cam) const {
     vector3d camToObj = position - cam.getPosition();
     float dist = camToObj.length();
-    if (dist > 10000.0f) return false; // trop loin
+    if (dist > 40000.0f) return false; // trop loin
     return true;
 }
 

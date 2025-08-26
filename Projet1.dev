@@ -81,7 +81,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit15]
-FileName=common\matrix.cpp
+FileName=common\matrix.hpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -121,17 +121,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit13]
-FileName=common\decor.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit12]
-FileName=common\decor.h
+FileName=common\camera.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -161,7 +151,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit16]
-FileName=common\matrix.hpp
+FileName=common\grid.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -171,7 +161,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit17]
-FileName=common\grid.cpp
+FileName=common\grid.hpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -211,7 +201,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit14]
-FileName=common\camera.h
+FileName=common\matrix.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -221,16 +211,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit18]
-FileName=common\grid.hpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit19]
 FileName=common\camera.cpp
 CompileCpp=1
 Folder=
@@ -240,7 +220,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit20]
+[Unit19]
 FileName=common\pixel.cpp
 CompileCpp=1
 Folder=
@@ -250,7 +230,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit21]
+[Unit20]
 FileName=common\pixel.hpp
 CompileCpp=1
 Folder=
@@ -260,17 +240,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit23]
-FileName=common\racetrack.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit22]
+[Unit21]
 FileName=common\racetrack.hpp
 CompileCpp=1
 Folder=
@@ -280,7 +250,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit24]
+[Unit23]
 FileName=common\boundingBox.hpp
 CompileCpp=1
 Folder=
@@ -290,7 +260,17 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit25]
+[Unit22]
+FileName=common\racetrack.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit24]
 FileName=common\boundingBox.cpp
 CompileCpp=1
 Folder=
@@ -300,7 +280,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit26]
+[Unit25]
 FileName=common\collisionDetection.hpp
 CompileCpp=1
 Folder=
@@ -310,7 +290,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit27]
+[Unit26]
 FileName=common\collisionDetection.cpp
 CompileCpp=1
 Folder=
@@ -320,17 +300,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit29]
-FileName=common\GUI.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit28]
+[Unit27]
 FileName=common\GUI.hpp
 CompileCpp=1
 Folder=
@@ -340,17 +310,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit31]
-FileName=common\carAI.hpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit30]
+[Unit29]
 FileName=common\carAI.cpp
 CompileCpp=1
 Folder=
@@ -360,7 +320,17 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit32]
+[Unit28]
+FileName=common\GUI.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit31]
 FileName=common\composant_vehicule.hpp
 CompileCpp=1
 Folder=
@@ -370,7 +340,17 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit33]
+[Unit30]
+FileName=common\carAI.hpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit32]
 FileName=common\composant_vehicule.cpp
 CompileCpp=1
 Folder=
@@ -380,8 +360,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit35]
-FileName=gameLoop.hpp
+[Unit33]
+FileName=gameLoop.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -391,7 +371,27 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit34]
-FileName=gameLoop.cpp
+FileName=gameLoop.hpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit12]
+FileName=common\decor.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit35]
+FileName=common\decor.h
 CompileCpp=1
 Folder=
 Compile=1

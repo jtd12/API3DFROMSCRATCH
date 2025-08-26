@@ -22,6 +22,7 @@
 #include"vector.h"
 #include"matrix.hpp"
 #include"camera.h"
+#include"decor.h"
 #include"pixel.hpp"
 #include"objloader.hpp"
 
@@ -48,8 +49,8 @@ class raceTrack
 		std::vector<std::vector<vector3d>> generateTrackMesh(const std::vector<std::pair<vector3d, vector3d>>& edges, float elevation);
 				std::vector<std::pair<vector3d, vector3d>> trackEdges;
 				std::vector<std::tuple<vector3d, vector3d, vector3d, vector3d>> trackEdgesElevated;
-			
 		std::vector<vector3d> generateWaypoints(const std::vector<vector3d>& controlPoints, float spacing);
+		bool  isPointOnTrack(float x, float z);
 };
 
 #endif

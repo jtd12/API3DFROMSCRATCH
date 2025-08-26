@@ -3,6 +3,16 @@
 #include"composant_vehicule.hpp"
 #include"objloader.hpp"
 #include<vector>
+#include <unordered_map>
+
+
+class ModelManager {
+public:
+    static std::unordered_map<std::string, mesh*> models;
+
+    static mesh* getModel(const std::string& filename);
+};
+
 
 class vehiculeAI
 {
@@ -26,7 +36,7 @@ class vehiculeAI
 	
 	public:
 
-    vehiculeAI(const std::string&  filename,const std::vector<vector3d>& waypoints,vector3d pos);
+    vehiculeAI(mesh* sharedMesh,const std::vector<vector3d>& waypoints,vector3d pos);
  
 	~vehiculeAI();
 	
@@ -42,6 +52,7 @@ class vehiculeAI
 	void setLocation(float loc);
 	void setSpeed(float s);
 	bool isInViewFrustum(const Camera& cam) const;
+	mesh* carMesh; 
 };
 
 #endif

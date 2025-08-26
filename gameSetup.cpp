@@ -10,45 +10,50 @@ std::vector<vector3d> waypoints = {
 };
 
 
-for (int i= 0; i < 2; i++) {
-    dec.push_back(new decor(vector3d(i*6000, 1000, 5000),vector3d(0,0.0,0),"data/decor"+std::to_string(i)+".obj"));
-}
+
+car=new vehicule("data/voiture.obj",vector3d(6000,1800,10000));
 
 
-for (int i= 0; i < 2; i++) {
-    dec.push_back(new decor(vector3d((i*6000)-30000, 1000, 40000),vector3d(0,0.0,0),"data/decor"+std::to_string(i)+".obj"));
-}
-
-
-
-car=new vehicule("data/voiture.obj",vector3d(6000,1800,15000));
-
-for(int i=0;i<10;i++)
-{
-	carAI.push_back(new vehiculeAI("data/voiture"+std::to_string(i)+".obj",waypoints,vector3d((i*800)+100,0,9000)));
-}
-carAI[0]->setSpeed(1800);
-carAI[1]->setSpeed(1450);
-carAI[2]->setSpeed(1570);
-carAI[3]->setSpeed(1750);
-carAI[4]->setSpeed(1430);
-carAI[5]->setSpeed(1560);
-carAI[6]->setSpeed(1950);
-carAI[7]->setSpeed(1130);
-carAI[8]->setSpeed(1230);
-carAI[9]->setSpeed(1590);
 
 
 sky=new skybox();
 camera=new Camera(vector3d(0, -4000, -500), vector3d(0, 0, 4000), vector3d(0, -1, 0));  // Caméra
 camera->setYaw(3.5f);
 camera->setPitch(-0.5f);
-grid_=new grid();
 pixel_=new pixel();
 race=new raceTrack();
 collid=new collisions();
 carAABB=new AABB();
 
+int numCubes = 130;  // nombre de cubes
+float minX = -75000.0f;
+float maxX = 75000.0f;
+float minZ = -75000.0f;
+float maxZ = 75000.0f;
+float yBase = 2000.0f;  // hauteur de base, on ajustera avec le terrain si besoin
+
+for (int i = 0; i < numCubes; i++) {
+    float x = minX + static_cast<float>(rand()) / RAND_MAX * (maxX - minX);
+    float z = minZ + static_cast<float>(rand()) / RAND_MAX * (maxZ - minZ);
+    
+      if (race->isPointOnTrack(x, z)) {
+        continue; // si c'est sur la piste, on rejette et on régénère
+    }
+
+    float y = race->getTerrainHeight(x, z);
+    vector3d pos(x, y+1000, z);
+    
+    cubes.push_back(new decor(
+        pos,
+        vector3d(0, static_cast<float>(rand() % 360), 0),  // rotation aléatoire sur Y
+        "data/decor0.obj"
+    ));
+
+float scaleX = 50.0f + static_cast<float>(rand()) / RAND_MAX * 50.0f;
+float scaleY = 50.0f + static_cast<float>(rand()) / RAND_MAX * 150.0f;
+float scaleZ = 50.0f + static_cast<float>(rand()) / RAND_MAX * 70.0f;
+cubes.back()->scale = {scaleX, scaleY, scaleZ};
+}
 
 controlPoints = {
     {20000, 1100, 0}, {0, 1000, -5000}, {-4000, 2000, 14000}, {-40000, 800, 0}, {27000,1000,-500},{7000,1000,65000},{5000,1000,5000},{-4000,1000,-100},{200, 1100, -4000},    // fermé avec hauteur égale
@@ -74,13 +79,35 @@ if (!font) {
 
 SDL_Color white = {255, 255, 255};
 
- myButton.push_back( new Button({30, 525, 100, 45}, "avancer", font, white));
- myButton.push_back( new Button({180, 525, 100, 45}, "reculer", font, white));
+ myButton.push_back( new Button({30, 700, 100, 45}, "avancer", font, white));
+ myButton.push_back( new Button({180, 700, 100, 45}, "reculer", font, white));
 
 
-pannel=new Button({0, 525, 800, 300});
+pannel=new Button({0, 700, 800, 100});
 
-text=new Button({400, 525, 100, 45}, "Vitesse: " + std::to_string(car->getSpeed()) + "km/h", font, white);
+text=new Button({400, 700, 100, 45}, "Vitesse: " + std::to_string(car->getSpeed()) + "km/h", font, white);
+
+ std::vector<std::string> filenames = {
+        "data/voiture0.obj",
+        "data/voiture1.obj",
+        "data/voiture2.obj",
+        "data/voiture3.obj",
+      
+    };
+
+srand((unsigned)time(0)); // initialise la graine une seule fois
+
+for(int i=0;i<10;i++)
+{
+	std::string filename = filenames[i % filenames.size()];  // cycle des modèles
+    mesh* sharedMesh = ModelManager::getModel(filename);
+	vector3d pos((i * 800) + 100, 0, 9000);  // position espacée
+        vehiculeAI* car = new vehiculeAI(sharedMesh, waypoints, pos);
+        int randomSpeed = 1500 + rand() % 1001;  
+        car->setSpeed(randomSpeed);
+        carAI.push_back(car);
+}
+
 
 }
 
@@ -90,9 +117,8 @@ text=new Button({400, 525, 100, 45}, "Vitesse: " + std::to_string(car->getSpeed(
 setup::~setup()
 {
 delete car;
-delete grid_;
-for(int i=0;i<dec.size();i++)
- delete dec[i];
+for(int i=0;i<cubes.size();i++)
+ delete cubes[i];
 delete camera;
 delete pixel_;
 delete race;
@@ -120,6 +146,8 @@ void setup::update(SDL_Renderer* renderer)
 
 void setup::update()
 {
+	
+
 	pannel->setFillColor(vector3d(25,195,155));
 
 	followCamera(car->getPosition(),car->getForwardVector(),camera->getYaw(),camera->getPitch());
@@ -148,7 +176,7 @@ void setup::update()
 	
 
 	car->update();
-	std::cout << "Position voiture : " << car->getPosition().x << ", " << car->getPosition().y << ", " << car->getPosition().z << std::endl;
+	//std::cout << "Position voiture : " << car->getPosition().x << ", " << car->getPosition().y << ", " << car->getPosition().z << std::endl;
 	for(int i=0;i<carAI.size();i++)
 	{
 		carAI[i]->update();
@@ -297,11 +325,11 @@ void setup::followCamera(vector3d carPosition, vector3d carForward, float yawInp
 {
 
  
-     float distanceBehind = 3500.0f;  // Distance caméra à la voiture
+     float distanceBehind = 4500.0f;  // Distance caméra à la voiture
     float heightOffset = 2500.0f;    // Hauteur de la caméra
 
     // Position centrale : juste derrière la voiture
-    vector3d basePos = carPosition - carForward.normalize() * distanceBehind + vector3d(0, heightOffset, 0);
+    vector3d basePos = carPosition - carForward.normalize() * distanceBehind;
 
     // Créer une matrice de rotation avec les inputs utilisateur pour orbiter
     Matrix4x4 rotationMatrix;
@@ -315,10 +343,11 @@ void setup::followCamera(vector3d carPosition, vector3d carForward, float yawInp
 
     // Position finale de la caméra (voiture + offset orbitée)
     vector3d cameraPos = carPosition + rotatedOffset;
-
+	cameraPos.y = heightOffset;  // ? on fixe la hauteur ici
     // Regarder toujours la voiture
     vector3d targetPos = carPosition;
 
+	
     camera->setPosition(vector3d(-cameraPos.x,-cameraPos.y,-cameraPos.z));
     camera->setTarget(vector3d(-targetPos.x,-targetPos.y,-targetPos.z));
 
@@ -543,10 +572,10 @@ void setup::drawDecor(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer
 }
 	for(int i=0;i<sceneDecor.size();i++)
 	{
-	if (sceneDecor[i]->isInViewFrustum(camera)) {
+if (sceneDecor[i]->isInViewFrustum(camera)) {
 	sceneDecor[i]->applyMatrix();
     sceneDecor[i]->draw(renderer, screenWidth, screenHeight, camera, allTriangles);
-		}
+	}
 	}
 }
 
@@ -609,41 +638,6 @@ float distance = (tri.v1 - car->getPosition()).length();
 }
 
 
-
-
-void setup::removeCloseDecor( Camera& cam, float threshold) {
-    // Utiliser un itérateur pour parcourir la liste et supprimer les éléments
-    for (it = dec.begin(); it != dec.end(); ) {
-        if ((*it)->isCloseTo(cam.getPosition(),threshold)) {
-        	
-        
-        	  removedDecor.push_back(*it);
-            // Supprimer l'objet et libérer la mémoire
-              it = dec.erase(it); // Supprimer de la liste principale
-        
-  
-            } else {
-                    ++it; // Passer à l'élément suivant
-                }
-            } 
-	
-
-}
-
- void setup::restoreDecorFarFrom(Camera& cam, float threshold) {
-        for ( it = removedDecor.begin(); it != removedDecor.end(); ) {
-            if (!(*it)->isCloseTo(cam.getPosition(), threshold)) {
-                // Déplacer le véhicule vers la liste principale
-                dec.push_back(*it);
-                it = removedDecor.erase(it); // Supprimer de la liste des véhicules supprimés
-            } else {
-                ++it; // Passer à l'élément suivant
-            }
-        }
-    }
-
-
-
 void setup::drawScene(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, 
                vehicule& car, std::vector<vehiculeAI*>& carAI, std::vector<decor*>& sceneDecor) {
     
@@ -674,9 +668,6 @@ for(int i=0;i<sceneDecor.size();i++)
     std::fill(framebufferDepth, framebufferDepth + screenWidth * screenHeight, std::numeric_limits<float>::infinity());
     sky->drawBackground(framebuffer, screenWidth, screenHeight);
     
-    Uint32 gridColor = (255 << 24) | (100 << 16) | (100 << 8) | 100; // Couleur grise
-	grid_->drawGrid3D( framebuffer, framebufferDepth, screenWidth,  screenHeight, 
-                       900, 60,  camera, pixel_);
       
 	  
 /*	  for (const auto& point : controlPoints) {
@@ -768,6 +759,6 @@ void setup::draw(SDL_Renderer* pRenderer)
 
 
  drawScene(pRenderer, 800, 600,  *camera, 
-              *car,carAI, dec);
+              *car,carAI, cubes);
 
 }
