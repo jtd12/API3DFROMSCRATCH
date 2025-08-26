@@ -2,7 +2,7 @@
 
 decorsetup::decorsetup()
 {
-    for(int i=0;i<5;i++)
+    for(int i=0;i<3;i++)
 	{
 	std::string filename = "data/decor" + std::to_string(i) + ".obj";
 	std::cout<<"i:"<<std::to_string(i)<<std::endl;
@@ -23,6 +23,8 @@ void decorsetup::update()
 
 void decorsetup::draw(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, camerasetup* camera)
 {
-   for (int i = 0; i < decor.size(); i++) 
+   for (int i = 0; i <decor.size(); i++) 
 	 decor[i]->draw(renderer, screenWidth, screenHeight, *camera->getCamera(), allTriangles);
 }
+
+

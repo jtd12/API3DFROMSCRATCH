@@ -109,10 +109,23 @@ for (int i = 0; i < 4; i++) {
 	for(int i=0;i<vehicule.size();i++)
 	{
 //	vehicule[i]->rotationMatrixY.setRotationY(rot);
-    vehicule[i]->draw(renderer, screenWidth, screenHeight, *camera->getCamera(), allTriangles);
+	if (isInViewFrustum(camera,vehicule))
+      vehicule[i]->draw(renderer, screenWidth, screenHeight, *camera->getCamera(), allTriangles);
 		
 	}
 	 for (int i = 0; i < wheel.size(); i++) {
-        wheel[i]->draw(renderer, screenWidth, screenHeight, *camera->getCamera(), allTriangles);
+	 	if (isInViewFrustum(camera,vehicule))
+          wheel[i]->draw(renderer, screenWidth, screenHeight, *camera->getCamera(), allTriangles);
     }
 }
+
+  bool vehiculesetup::isInViewFrustum(camerasetup* camera,std::vector<object*>& vehicule) const {
+  	for(int i=0;i<vehicule.size();i++)
+	{
+    vector3d camToObj = position[i] - camera->getCamera()->getPosition();
+    float dist = camToObj.length();
+    if (dist >50000.0f) return false; // trop loin
+	}
+    return true;
+}
+

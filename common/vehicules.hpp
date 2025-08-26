@@ -14,6 +14,7 @@ class vehiculesetup
 		vehiculesetup();
 		~vehiculesetup();
 		void init(std::vector<object*>& vehicule);
+		bool isInViewFrustum(camerasetup* camera,std::vector<object*>& vehicule) const;
 		void update(std::vector<object*>& vehicule);
 		void draw(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight,std::vector<object*>& vehicule,camerasetup* camera);
 };
