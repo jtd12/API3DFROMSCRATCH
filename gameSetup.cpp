@@ -11,7 +11,7 @@ std::vector<vector3d> waypoints = {
 
 
 
-car=new vehicule("data/voiture.obj",vector3d(6000,1800,10000));
+car=new vehicule("data/voiture.obj",vector3d(6000,1800,35000));
 
 
 
@@ -25,35 +25,7 @@ race=new raceTrack();
 collid=new collisions();
 carAABB=new AABB();
 
-int numCubes = 130;  // nombre de cubes
-float minX = -75000.0f;
-float maxX = 75000.0f;
-float minZ = -75000.0f;
-float maxZ = 75000.0f;
-float yBase = 2000.0f;  // hauteur de base, on ajustera avec le terrain si besoin
 
-for (int i = 0; i < numCubes; i++) {
-    float x = minX + static_cast<float>(rand()) / RAND_MAX * (maxX - minX);
-    float z = minZ + static_cast<float>(rand()) / RAND_MAX * (maxZ - minZ);
-    
-      if (race->isPointOnTrack(x, z)) {
-        continue; // si c'est sur la piste, on rejette et on régénère
-    }
-
-    float y = race->getTerrainHeight(x, z);
-    vector3d pos(x, y+1000, z);
-    
-    cubes.push_back(new decor(
-        pos,
-        vector3d(0, static_cast<float>(rand() % 360), 0),  // rotation aléatoire sur Y
-        "data/decor0.obj"
-    ));
-
-float scaleX = 50.0f + static_cast<float>(rand()) / RAND_MAX * 50.0f;
-float scaleY = 50.0f + static_cast<float>(rand()) / RAND_MAX * 150.0f;
-float scaleZ = 50.0f + static_cast<float>(rand()) / RAND_MAX * 70.0f;
-cubes.back()->scale = {scaleX, scaleY, scaleZ};
-}
 
 controlPoints = {
     {20000, 1100, 0}, {0, 1000, -5000}, {-4000, 2000, 14000}, {-40000, 800, 0}, {27000,1000,-500},{7000,1000,65000},{5000,1000,5000},{-4000,1000,-100},{200, 1100, -4000},    // fermé avec hauteur égale
@@ -97,7 +69,7 @@ text=new Button({400, 700, 100, 45}, "Vitesse: " + std::to_string(car->getSpeed(
 
 srand((unsigned)time(0)); // initialise la graine une seule fois
 
-for(int i=0;i<10;i++)
+for(int i=0;i<9;i++)
 {
 	std::string filename = filenames[i % filenames.size()];  // cycle des modèles
     mesh* sharedMesh = ModelManager::getModel(filename);
@@ -107,6 +79,42 @@ for(int i=0;i<10;i++)
         car->setSpeed(randomSpeed);
         carAI.push_back(car);
 }
+
+
+int numCubes = 100;  // nombre de cubes
+float minX = -75000.0f;
+float maxX = 75000.0f;
+float minZ = -75000.0f;
+float maxZ = 75000.0f;
+float yBase = 2000.0f;  // hauteur de base, on ajustera avec le terrain si besoin
+
+int cubesCreated = 0;
+while (cubesCreated < numCubes) {
+    float x = minX + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxX - minX);
+    float z = minZ + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxZ - minZ);
+	
+	if (!race || race->trackEdges.empty()) {
+    std::cerr << "Erreur : piste non initialisée" << std::endl;
+    return;
+}
+
+    if (race->isPointOnTrack(x, z)) continue;
+
+    float y = race->getTerrainHeight(x, z);
+    vector3d pos(x, y + 1000, z);
+
+    float randAngle = static_cast<float>(rand() % 360);
+    float scaleX = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 50.0f;
+    float scaleY = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 150.0f;
+    float scaleZ = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 70.0f;
+
+    decor* newCube = new decor(pos, vector3d(0, randAngle, 0), "data/decor.obj");
+    newCube->scale = {scaleX, scaleY, scaleZ};
+    cubes.push_back(newCube);
+
+    cubesCreated++;
+}
+
 
 
 }
@@ -146,7 +154,6 @@ void setup::update(SDL_Renderer* renderer)
 
 void setup::update()
 {
-	
 
 	pannel->setFillColor(vector3d(25,195,155));
 
@@ -579,8 +586,10 @@ if (sceneDecor[i]->isInViewFrustum(camera)) {
 	}
 }
 
-void setup::drawPixels(std::vector<Triangle>& allTriangles,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera)
+void setup::drawPixels(std::vector<Triangle>& allTriangles,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera,bool isPlayer)
 {
+	int triIndex = 0;
+	
 	   for (auto& tri : allTriangles) {
         tri.avgDepth = (tri.v1.z + tri.v2.z + tri.v3.z) / 3.0f;
         
@@ -596,14 +605,54 @@ void setup::drawPixels(std::vector<Triangle>& allTriangles,Uint32* framebuffer,f
     
      for (auto& tri : allTriangles) {
      	
+     	
       
 float distance = (tri.v1 - car->getPosition()).length();
-    if (distance > 65000) {
-        continue; // Ignorer les triangles trop éloignés
+
+ if (distance < 10000) 
+    {
+        if (!isPlayer) {
+            // Afficher 1 triangle sur 20 pour AI
+            if (triIndex % 1 != 0) {
+                triIndex++;
+                continue;
+            }
+        }
     }
     
- 
-
+    if (distance > 10000 && distance < 40000) 
+    {
+        if (!isPlayer) {
+            // Afficher 1 triangle sur 20 pour AI
+            if (triIndex % 5 != 0) {
+                triIndex++;
+                continue;
+            }
+        }
+    }
+    
+       if (distance > 40000 && distance < 80000) 
+    {
+        if (!isPlayer) {
+            // Afficher 1 triangle sur 20 pour AI
+            if (triIndex % 100 != 0) {
+                triIndex++;
+                continue;
+            }
+        }
+    }
+    
+        if (distance > 80000) 
+    {
+        if (!isPlayer) {
+            // Afficher 1 triangle sur 20 pour AI
+            if (triIndex % 500 != 0) {
+                triIndex++;
+                continue;
+            }
+        }
+    }
+        
         Point2D p1 = pixel_->project(tri.v1, screenWidth, screenHeight);
         Point2D p2 = pixel_->project(tri.v2, screenWidth, screenHeight);
         Point2D p3 = pixel_->project(tri.v3, screenWidth, screenHeight);
@@ -612,6 +661,7 @@ float distance = (tri.v1 - car->getPosition()).length();
         if (p1.x < 0 || p1.x >= screenWidth || p1.y < 0 || p1.y >= screenHeight ||
             p2.x < 0 || p2.x >= screenWidth || p2.y < 0 || p2.y >= screenHeight ||
             p3.x < 0 || p3.x >= screenWidth || p3.y < 0 || p3.y >= screenHeight) {
+            triIndex++;
             continue;
         }
 
@@ -632,6 +682,8 @@ float distance = (tri.v1 - car->getPosition()).length();
                                         { p3.x, screenHeight - p3.y },
                                         screenWidth, screenHeight, r, g, b, 
                                         tri.v1.z, tri.v2.z, tri.v3.z);
+                                        
+          triIndex++;
     
 
 }
@@ -641,21 +693,24 @@ float distance = (tri.v1 - car->getPosition()).length();
 void setup::drawScene(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, 
                vehicule& car, std::vector<vehiculeAI*>& carAI, std::vector<decor*>& sceneDecor) {
     
- 
+    
+     
     pixel_->clearBuffer();
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-    std::vector<Triangle> allTriangles;
-    
+ std::vector<Triangle> playerTriangles;
+    std::vector<Triangle> AIPlayerTriangles;
+    std::vector<Triangle> decorTriangles;
+     std::vector<Triangle> allTriangles;
+     
 for(int i=0;i<sceneDecor.size();i++)
     allTriangles.reserve(car.getTriangles().size() + sceneDecor[i]->triangles.size());
 	
 
-	drawCar(allTriangles,renderer, screenWidth, screenHeight,  camera,car);
+	drawCar(playerTriangles,renderer, screenWidth, screenHeight,  camera,car);
 	
-	  drawCar(allTriangles,renderer, screenWidth, screenHeight,  camera,carAI);
+   drawCar(AIPlayerTriangles,renderer, screenWidth, screenHeight,  camera,carAI);
 	
-	drawDecor(allTriangles, renderer,  screenWidth, screenHeight,  camera,  sceneDecor);
+	drawDecor(decorTriangles, renderer,  screenWidth, screenHeight,  camera,  sceneDecor);
 
     // **Création d'une texture pour dessiner le framebuffer**
     SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, 
@@ -697,6 +752,7 @@ for(int i=0;i<sceneDecor.size();i++)
               
 	    for (auto& tri : trackTriangles) {
 	    		vector3d normal = computeNormal(tri[0], tri[1], tri[2]);
+	    		
       //	if (isTriangleVisible(normal, car.getPosition(), tri[0]))
 	    race->drawTriangle(allTriangles, pixel_, framebuffer, framebufferDepth, screenWidth, screenHeight, tri[0], tri[1], tri[2], camera,true,false);
 	
@@ -721,9 +777,10 @@ for (const auto& tri : borderTriangles) {
 
     // **Affichage des triangles triés**
    
-    drawPixels( allTriangles,framebuffer,framebufferDepth, screenWidth, screenHeight,  camera);
-    
-
+    drawPixels( playerTriangles,framebuffer,framebufferDepth, screenWidth, screenHeight,  camera,true);
+    drawPixels( AIPlayerTriangles,framebuffer,framebufferDepth, screenWidth, screenHeight,  camera,false);
+	drawPixels( decorTriangles,framebuffer,framebufferDepth, screenWidth, screenHeight,  camera,true);
+//	drawPixels( allTriangles,framebuffer,framebufferDepth, screenWidth, screenHeight,  camera,true);
 	
 	SDL_SetHint(SDL_HINT_RENDER_VSYNC, "0");
     // **Mise à jour de la texture**

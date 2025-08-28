@@ -29,7 +29,7 @@ class setup
 	void drawCar(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera,vehicule& car);
 	void drawCar(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera,std::vector<vehiculeAI*>& car);
 	void drawDecor(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<decor*>& sceneDecor);
-	void drawPixels(std::vector<Triangle>& allTriangles,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera);
+	void drawPixels(std::vector<Triangle>& allTriangles,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera,bool isPlayer);
 	void drawScene(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera , vehicule& car, std::vector<vehiculeAI*>& carAI,  std::vector<decor*>& sceneDecor
                );
 
@@ -66,6 +66,7 @@ class setup
 	vector3d posCamera;
 	vector3d targetCamera;
 	vector3d upCamera;
+	
 
 };
 

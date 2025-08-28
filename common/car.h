@@ -48,6 +48,7 @@ class vehicule
 		vector3d getRotation();
 		vector3d getForwardVector() const;
 		std::vector<Triangle> getTriangles();
+		bool player;
 		
 	private:
 	objloader *obj;

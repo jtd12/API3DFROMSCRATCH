@@ -8,7 +8,12 @@ decor::decor(vector3d pos,vector3d rot,const std::string& path)
 		rotation=rot;
 		scale=vector3d(5,5,5);
 		position=pos;
-		
+		float r = static_cast<float>(rand() % 256) / 255.0f;
+	    float g = static_cast<float>(rand() % 256) / 255.0f;
+	    float b = static_cast<float>(rand() % 256) / 255.0f;
+    	
+		setColor(vector3d(r, g, b));
+
 		
 }
 
@@ -57,6 +62,12 @@ scaleMatrix.setScaling(scale.x,scale.y,scale.z);
          return (position - other).length() > threshold; // distance Euclidienne
     }
     
+
+void decor::setColor(const vector3d& color) {
+    for (auto& tri : triangles) {
+        tri.material.diffuseColor = color;
+    }
+}
 
  vector3d decor::getNormal() const {
         vector3d avgNormal(0, 0, 0);

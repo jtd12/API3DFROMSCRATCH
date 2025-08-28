@@ -13,8 +13,8 @@ vehicule::vehicule(const std::string& filename,vector3d pos)
 		rot=vector3d(0,0,0);
 		speed=0;
 		angle=1.5f;
-		maxSpeed=rand() % 180 + 220;
-		acc=7.0f;
+		maxSpeed=rand() % 180 + 300;
+		acc=12.0f;
 		dec=3.0f;
 		turnSpeed=0.15f;
 		a=vector3d(0.0,0.0,0);
@@ -28,6 +28,7 @@ vehicule::vehicule(const std::string& filename,vector3d pos)
 		down=false;
 		right=false;
 		left=false;
+		
 		
 
 }
@@ -364,6 +365,7 @@ void vehicule::draw(SDL_Renderer* renderer, int screenWidth, int screenHeight, c
 	obj->smoothNormals(triangles, vertexNormals,numVertices);
 
     for (auto& tri : triangles) {
+    
         Triangle transformedTri = tri;
         transformedTri.v1 = finalMatrix.apply(tri.v1);
         transformedTri.v2 = finalMatrix.apply(tri.v2);

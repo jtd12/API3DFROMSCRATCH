@@ -32,6 +32,7 @@ class decor
     	bool isCloseTo( vector3d other,float threshold) const ;
     	vector3d position;
     	bool isInViewFrustum(const Camera& cam) const;
+    	 void setColor(const vector3d& color);
 		vector3d scale;
 				vector3d rotation;
 	private:
