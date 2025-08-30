@@ -1,6 +1,7 @@
 #ifndef DEF_CAR_AI
 #define DEF_CAR_AI
 #include"composant_vehicule.hpp"
+#include"car.h"
 #include"objloader.hpp"
 #include<vector>
 #include <unordered_map>
@@ -29,9 +30,8 @@ class vehiculeAI
 	vector3d position;
     vector3d direction;
     float speed;
-    int currentWaypointIndex;
     float yaw = 0.0f;
-
+	mesh* carMesh; 
     std::vector<vector3d> waypoints_;
 	
 	public:
@@ -42,6 +42,8 @@ class vehiculeAI
 	
 	void update();
 	
+	void setGravity();
+	
 	void applyMatrix();
 
 	void draw(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<Triangle>& allTriangles);
@@ -51,8 +53,10 @@ class vehiculeAI
     vector3d getPosition();
 	void setLocation(float loc);
 	void setSpeed(float s);
-	bool isInViewFrustum(const Camera& cam) const;
-	mesh* carMesh; 
+	bool isInViewFrustum(vehicule& car) const;
+	
+	float getSpeed();
+	int currentWaypointIndex;
 };
 
 #endif

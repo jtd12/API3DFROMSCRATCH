@@ -2,120 +2,7 @@
 
 setup::setup()
 {
-
-std::vector<vector3d> waypoints = {
-    {5000, 1100, -1000}, {1000, 1000, -6700}, {-3000, 2000, -4000},{3000, 2000, 13000}, {-5000, 800, 14000}, {-27000,1000,12000},{-35000,1000,8000},{-41000,1000,7000},{-42000,1000,-2000},{8000, 1100, -12500}
-    ,{18000, 1100, -9000},{30000, 1100, 1000},{31000, 1100, 4000},{33000, 1100, 15000},{34000, 1100, 15900},{32500, 1100, 22000},{22000, 1100, 45000},{20000, 1100, 50000},{18000, 1100, 55000},{5000, 1100, 65000},
- 
-};
-
-
-
-car=new vehicule("data/voiture.obj",vector3d(6000,1800,35000));
-
-
-
-
-sky=new skybox();
-camera=new Camera(vector3d(0, -4000, -500), vector3d(0, 0, 4000), vector3d(0, -1, 0));  // Caméra
-camera->setYaw(3.5f);
-camera->setPitch(-0.5f);
-pixel_=new pixel();
-race=new raceTrack();
-collid=new collisions();
-carAABB=new AABB();
-
-
-
-controlPoints = {
-    {20000, 1100, 0}, {0, 1000, -5000}, {-4000, 2000, 14000}, {-40000, 800, 0}, {27000,1000,-500},{7000,1000,65000},{5000,1000,5000},{-4000,1000,-100},{200, 1100, -4000},    // fermé avec hauteur égale
-        // répétition du premier
-      // optionnel : pour continuité Catmull-Rom // Fermeture
-};
-
-race->initializeTrack(controlPoints, 70, 3400.0f); // Générer la piste
-trackTriangles = race->generateTrackMesh(race->trackEdges,10.0f);
-borderTriangles = race->generateTrackBorders(race->trackEdgesElevated);
-terrainTriangles = race->generateTerrain(150000, 150000, 100);
-
-if (TTF_Init() == -1) {
-    std::cerr << "Erreur SDL_ttf : " << TTF_GetError() << std::endl;
-	return;
-}
-
-TTF_Font* font = TTF_OpenFont("data/font/arial.TTF", 34);
-
-if (!font) {
-    std::cout << "Impossible de charger la police : " << TTF_GetError() << std::endl;
-}
-
-SDL_Color white = {255, 255, 255};
-
- myButton.push_back( new Button({30, 700, 100, 45}, "avancer", font, white));
- myButton.push_back( new Button({180, 700, 100, 45}, "reculer", font, white));
-
-
-pannel=new Button({0, 700, 800, 100});
-
-text=new Button({400, 700, 100, 45}, "Vitesse: " + std::to_string(car->getSpeed()) + "km/h", font, white);
-
- std::vector<std::string> filenames = {
-        "data/voiture0.obj",
-        "data/voiture1.obj",
-        "data/voiture2.obj",
-        "data/voiture3.obj",
-      
-    };
-
-srand((unsigned)time(0)); // initialise la graine une seule fois
-
-for(int i=0;i<9;i++)
-{
-	std::string filename = filenames[i % filenames.size()];  // cycle des modèles
-    mesh* sharedMesh = ModelManager::getModel(filename);
-	vector3d pos((i * 800) + 100, 0, 9000);  // position espacée
-        vehiculeAI* car = new vehiculeAI(sharedMesh, waypoints, pos);
-        int randomSpeed = 1500 + rand() % 1001;  
-        car->setSpeed(randomSpeed);
-        carAI.push_back(car);
-}
-
-
-int numCubes = 100;  // nombre de cubes
-float minX = -75000.0f;
-float maxX = 75000.0f;
-float minZ = -75000.0f;
-float maxZ = 75000.0f;
-float yBase = 2000.0f;  // hauteur de base, on ajustera avec le terrain si besoin
-
-int cubesCreated = 0;
-while (cubesCreated < numCubes) {
-    float x = minX + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxX - minX);
-    float z = minZ + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxZ - minZ);
-	
-	if (!race || race->trackEdges.empty()) {
-    std::cerr << "Erreur : piste non initialisée" << std::endl;
-    return;
-}
-
-    if (race->isPointOnTrack(x, z)) continue;
-
-    float y = race->getTerrainHeight(x, z);
-    vector3d pos(x, y + 1000, z);
-
-    float randAngle = static_cast<float>(rand() % 360);
-    float scaleX = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 50.0f;
-    float scaleY = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 150.0f;
-    float scaleZ = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 70.0f;
-
-    decor* newCube = new decor(pos, vector3d(0, randAngle, 0), "data/decor.obj");
-    newCube->scale = {scaleX, scaleY, scaleZ};
-    cubes.push_back(newCube);
-
-    cubesCreated++;
-}
-
-
+game=new gameLoop();
 
 }
 
@@ -142,6 +29,164 @@ for(int i=0;i<carAI.size();i++)
 }
 }
 
+void setup::init()
+{
+	std::vector<vector3d> waypoints = {
+    {5000, 1100, -1000}, {1000, 1000, -6700}, {-3000, 2000, -4000},{3000, 2000, 13000}, {-5000, 800, 14000}, {-27000,1000,12000},{-35000,1000,8000},{-41000,1000,7000},{-42000,1000,-2000},{8000, 1100, -12500}
+    ,{18000, 1100, -9000},{30000, 1100, 1000},{31000, 1100, 4000},{33000, 1100, 15000},{34000, 1100, 15900},{32500, 1100, 22000},{22000, 1100, 45000},{20000, 1100, 50000},{18000, 1100, 55000},{5000, 1100, 65000},
+ 
+};
+
+
+
+car=new vehicule("data/voiture.obj",vector3d(6000,1800,15000));
+
+ std::vector<std::string> filenames = {
+        "data/voiture0.obj",
+        "data/voiture1.obj",
+        "data/voiture2.obj",
+        "data/voiture3.obj",
+      
+    };
+
+
+
+srand((unsigned)time(0)); // initialise la graine une seule fois
+
+for(int i=0;i<9;i++)
+{
+	std::string filename = filenames[i % filenames.size()];  // cycle des modèles
+    mesh* sharedMesh = ModelManager::getModel(filename);
+	int startIndex = rand() % waypoints.size();
+    vector3d startPos = waypoints[startIndex];		
+    vehiculeAI* car_ = new vehiculeAI(sharedMesh, waypoints, startPos);
+    
+    car_->currentWaypointIndex = startIndex; // <-- ici
+    car_->setSpeed(static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (1000 - 100));
+    std::cout << "Car " << i << " speed = " << car_->getSpeed() << std::endl;
+    carAI.push_back(car_);
+}
+
+
+
+sky=new skybox();
+camera=new Camera(vector3d(0, -4000, -500), vector3d(0, 0, 4000), vector3d(0, -1, 0));  // Caméra
+camera->setYaw(3.5f);
+camera->setPitch(-0.5f);
+pixel_=new pixel();
+race=new raceTrack();
+collid=new collisions();
+carAABB=new AABB();
+
+controlPoints = {
+    {20000, 1100, 0}, {0, 1000, -5000}, {-4000, 2000, 14000}, {-40000, 800, 0}, {27000,1000,-500},{7000,1000,65000},{5000,1000,5000},{-4000,1000,-100},{200, 1100, -4000},    // fermé avec hauteur égale
+        // répétition du premier
+      // optionnel : pour continuité Catmull-Rom // Fermeture
+};
+
+race->initializeTrack(controlPoints, 70, 3400.0f); // Générer la piste
+trackTriangles = race->generateTrackMesh(race->trackEdges,10.0f);
+borderTriangles = race->generateTrackBorders(race->trackEdgesElevated);
+terrainTriangles = race->generateTerrain(150000, 150000, 100);
+
+if (TTF_Init() == -1) {
+    std::cerr << "Erreur SDL_ttf : " << TTF_GetError() << std::endl;
+	return;
+}
+
+TTF_Font* font = TTF_OpenFont("data/font/arial.TTF", 24);
+
+if (!font) {
+    std::cout << "Impossible de charger la police : " << TTF_GetError() << std::endl;
+}
+
+SDL_Color white = {255, 255, 255};
+
+ myButton.push_back( new Button({30, 700, 100, 45}, "avancer", font, white));
+ myButton.push_back( new Button({180, 700, 100, 45}, "reculer", font, white));
+
+
+pannel=new Button({0, 700, 800, 100});
+
+text.push_back(new Button({400, 700, 100, 45}, "Vitesse: " + std::to_string(car->getSpeed()) + "km/h", font, white));
+
+text.push_back(new Button({100, 650, 100, 45},"Car1 Speed: " + std::to_string(carAI[0]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 600, 100, 45},"Car2 Speed: " + std::to_string(carAI[1]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 550, 100, 45},"Car3 Speed: " + std::to_string(carAI[2]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 500, 100, 45},"Car4 Speed: " + std::to_string(carAI[3]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 450, 100, 45},"Car5 Speed: " + std::to_string(carAI[4]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 400, 100, 45},"Car6 Speed: " + std::to_string(carAI[5]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 350, 100, 45},"Car7 Speed: " + std::to_string(carAI[6]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 300, 100, 45},"Car8 Speed: " + std::to_string(carAI[7]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 250, 100, 45},"Car9 Speed: " + std::to_string(carAI[8]->getSpeed()/3) + "km/h" , font, white));
+
+int numCubes = 50;  // nombre de cubes
+float minX = -75000.0f;
+float maxX = 75000.0f;
+float minZ = -75000.0f;
+float maxZ = 75000.0f;
+float yBase = 2000.0f;  // hauteur de base, on ajustera avec le terrain si besoin
+
+int cubesCreated = 0;
+while (cubesCreated < numCubes) {
+    float x = minX + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxX - minX);
+    float z = minZ + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxZ - minZ);
+	
+	if (!race || race->trackEdges.empty()) {
+    std::cerr << "Erreur : piste non initialisée" << std::endl;
+    return;
+}
+
+    if (race->isPointOnTrack(x, z)) continue;
+
+    float y = race->getTerrainHeight(x, z);
+    vector3d pos(x, y + 1000, z);
+
+    float randAngle = static_cast<float>(rand() % 360);
+    float scaleX = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 50.0f;
+    float scaleY = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 150.0f;
+    float scaleZ = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 70.0f;
+
+    decor* newCube = new decor(pos, vector3d(0, randAngle, 0), "data/cubes.obj");
+    newCube->scale = {scaleX, scaleY, scaleZ};
+    cubes.push_back(newCube);
+    cubesCreated++;
+}
+
+
+int numArbres = 50;  // nombre de cubes
+int arbresCreated = 0;
+while (arbresCreated < numArbres) {
+    float x = minX + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxX - minX);
+    float z = minZ + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxZ - minZ);
+	
+	if (!race || race->trackEdges.empty()) {
+    std::cerr << "Erreur : piste non initialisée" << std::endl;
+    return;
+}
+
+    if (race->isPointOnTrack(x, z)) continue;
+
+    float y = race->getTerrainHeight(x, z);
+    vector3d pos(x, y + 1000, z);
+
+    float randAngle = static_cast<float>(rand() % 360);
+    float scaleX = 300.0f;
+    float scaleY = 300.0f;
+    float scaleZ = 300.0f;
+
+    decor* newArbre = new decor(pos, vector3d(0, randAngle, 0), "data/arbre.obj");
+    newArbre->scale = {scaleX, scaleY, scaleZ};
+	arbres.push_back(newArbre);
+    arbresCreated++;
+}
+
+	temps=50;
+
+	text.push_back(new Button({500, 500, 100, 45}, std::to_string(temps) , font, white));
+
+}
+
 void setup::update(float t)
 {
 //	car->moveForward(t);
@@ -149,15 +194,75 @@ void setup::update(float t)
 
 void setup::update(SDL_Renderer* renderer)
 {
-   text->setText("Vitesse: " + std::to_string((int)car->getSpeed()) + "km/h",renderer);	
+    text[0]->setText("Vitesse: " + std::to_string((int)car->getSpeed()) + "km/h",renderer);
+    
+	for (size_t i = 0; i < carAI.size(); ++i) {
+    int speedInt = static_cast<int>(std::round(carAI[i]->getSpeed()/3)); // arrondi
+    text[i+1]->setText(std::string("Car Speed: ") + std::to_string(speedInt) + " km/h", renderer);
+    
+    text[10]->setText("temps: " + std::to_string((int)temps) ,renderer);
+}
 }
 
-void setup::update()
+void setup::update(setup* g)
 {
 
 	pannel->setFillColor(vector3d(25,195,155));
 
 	followCamera(car->getPosition(),car->getForwardVector(),camera->getYaw(),camera->getPitch());
+	
+	 car->setGravity();
+ 
+ for(int i=0;i<carAI.size();i++)
+  carAI[i]->setGravity();
+  
+	for (const auto& triangle : trackTriangles) {
+    vector3d v1 = triangle[0];
+    vector3d v2 = triangle[1];
+    vector3d v3 = triangle[2];
+    
+ 	if (collid->pointInTriangle(car->getPosition(), v1, v2, v3)) {
+       car->setLocation(v1.y+200);
+}
+}
+
+for (const auto& triangle : trackTriangles) {
+    vector3d v1 = triangle[0];
+    vector3d v2 = triangle[1];
+    vector3d v3 = triangle[2];
+
+	for(int i=0;i<carAI.size();i++)
+	{
+ 	if (collid->pointInTriangle(carAI[i]->getPosition(), v1, v2, v3)) {
+       carAI[i]->setLocation(v1.y+200);
+    }
+}
+}
+
+		
+ if(temps>0)
+	temps--;
+
+
+if(temps<=0)
+{
+
+	Uint32 currentTime = SDL_GetTicks();
+
+	if (currentTime - lastSpeedChangeTime >= speedChangeInterval)
+	{
+	    // On change la vitesse de toutes les voitures AI
+	    for (auto& car : carAI)
+	    {
+	        float newSpeed = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (1000 - 100) + 100;
+	        car->setSpeed(newSpeed);
+	        std::cout << "New speed for car: " << newSpeed << std::endl;
+	    }
+	
+	    lastSpeedChangeTime = currentTime; // reset du timer
+	}
+	
+
 	
 	if(myButton[0]->getClick())
 	{
@@ -256,28 +361,6 @@ void setup::update()
 	 //removeCloseDecor( *camera, 10000);
  	// restoreDecorFarFrom( *camera, 20000);
  	 
-for (const auto& triangle : trackTriangles) {
-    vector3d v1 = triangle[0];
-    vector3d v2 = triangle[1];
-    vector3d v3 = triangle[2];
-    
- 	if (collid->pointInTriangle(car->getPosition(), v1, v2, v3)) {
-       car->setLocation(v1.y+200);
-}
-}
-
-for (const auto& triangle : trackTriangles) {
-    vector3d v1 = triangle[0];
-    vector3d v2 = triangle[1];
-    vector3d v3 = triangle[2];
-
-	for(int i=0;i<carAI.size();i++)
-	{
- 	if (collid->pointInTriangle(carAI[i]->getPosition(), v1, v2, v3)) {
-       carAI[i]->setLocation(v1.y+200);
-    }
-}
-}
 
 
 for (const auto& triangle : borderTriangles)
@@ -314,7 +397,7 @@ if( car->getControlActif2())
 }
 
 	
-	
+}
 
 	
     //carVelocity = carVelocity * -0.5f; // Appliquer un rebond simple
@@ -561,14 +644,14 @@ void setup::drawCar(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, 
     car.draw(renderer, screenWidth, screenHeight, camera, allTriangles);
 }
 
-void setup::drawCar(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera,std::vector<vehiculeAI*>& car)
+void setup::drawCar(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera,std::vector<vehiculeAI*>& car,vehicule& carSimple)
 {
 	for(int i=0;i<car.size();i++)
 	{
-			if (car[i]->isInViewFrustum(camera)) {
+		if (car[i]->isInViewFrustum(carSimple)) {
 		car[i]->applyMatrix();
 	    car[i]->draw(renderer, screenWidth, screenHeight, camera, allTriangles);
-		}
+	}
 	}
 }
 
@@ -586,7 +669,7 @@ if (sceneDecor[i]->isInViewFrustum(camera)) {
 	}
 }
 
-void setup::drawPixels(std::vector<Triangle>& allTriangles,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera,bool isPlayer)
+void setup::drawPixels(std::vector<Triangle>& allTriangles,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera,bool isPlayer,int min,int max,int min2)
 {
 	int triIndex = 0;
 	
@@ -609,7 +692,7 @@ void setup::drawPixels(std::vector<Triangle>& allTriangles,Uint32* framebuffer,f
       
 float distance = (tri.v1 - car->getPosition()).length();
 
- if (distance < 10000) 
+ if (distance < min) //10000
     {
         if (!isPlayer) {
             // Afficher 1 triangle sur 20 pour AI
@@ -620,7 +703,7 @@ float distance = (tri.v1 - car->getPosition()).length();
         }
     }
     
-    if (distance > 10000 && distance < 40000) 
+    if (distance > min && distance < max)//10000 40000 
     {
         if (!isPlayer) {
             // Afficher 1 triangle sur 20 pour AI
@@ -631,26 +714,23 @@ float distance = (tri.v1 - car->getPosition()).length();
         }
     }
     
-       if (distance > 40000 && distance < 80000) 
+       if (distance > max && distance < min2) //40000 80000
     {
         if (!isPlayer) {
             // Afficher 1 triangle sur 20 pour AI
-            if (triIndex % 100 != 0) {
+            if (triIndex % 10 != 0) {
                 triIndex++;
                 continue;
             }
         }
     }
     
-        if (distance > 80000) 
+        if (distance > min2) //80000
     {
-        if (!isPlayer) {
-            // Afficher 1 triangle sur 20 pour AI
-            if (triIndex % 500 != 0) {
-                triIndex++;
-                continue;
-            }
-        }
+         if (!isPlayer) {
+        triIndex++;
+        continue; // saute tous les triangles ? aucun affiché
+    }
     }
         
         Point2D p1 = pixel_->project(tri.v1, screenWidth, screenHeight);
@@ -690,16 +770,89 @@ float distance = (tri.v1 - car->getPosition()).length();
 }
 
 
+
+
+void setup::drawPixels(std::vector<Triangle>& allTriangles,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera,bool isPlayer)
+{
+	int triIndex = 0;
+	
+	   for (auto& tri : allTriangles) {
+        tri.avgDepth = (tri.v1.z + tri.v2.z + tri.v3.z) / 3.0f;
+        
+         
+    }
+
+    // **Tri rapide des triangles (éviter `std::stable_sort` si possible)**
+    std::sort(allTriangles.begin(), allTriangles.end(), 
+              [](const Triangle& t1, const Triangle& t2) {
+                  return t1.avgDepth > t2.avgDepth;
+              });
+              
+    
+     for (auto& tri : allTriangles) {
+     	
+     	
+      
+float distance = (tri.v1 - car->getPosition()).length();
+
+
+        if (isPlayer) {
+            // Afficher 1 triangle sur 20 pour AI
+            if (triIndex % 1 != 0) {
+                triIndex++;
+                continue;
+            }
+        }
+    
+    
+        Point2D p1 = pixel_->project(tri.v1, screenWidth, screenHeight);
+        Point2D p2 = pixel_->project(tri.v2, screenWidth, screenHeight);
+        Point2D p3 = pixel_->project(tri.v3, screenWidth, screenHeight);
+
+        // Vérification des limites écran
+        if (p1.x < 0 || p1.x >= screenWidth || p1.y < 0 || p1.y >= screenHeight ||
+            p2.x < 0 || p2.x >= screenWidth || p2.y < 0 || p2.y >= screenHeight ||
+            p3.x < 0 || p3.x >= screenWidth || p3.y < 0 || p3.y >= screenHeight) {
+            triIndex++;
+            continue;
+        }
+
+        vector3d normal = (tri.v3 - tri.v1).crossproduct(tri.v2 - tri.v1).normalize();
+        vector3d lightDir = vector3d(0.0f, -1.0f, 1000.0f).normalize();
+        float intensity = std::max(0.0f, normal.dotproduct(lightDir));
+
+        Uint8 r = std::min(255, static_cast<int>(tri.material.diffuseColor.x * intensity * 255));
+        Uint8 g = std::min(255, static_cast<int>(tri.material.diffuseColor.y * intensity * 255));
+        Uint8 b = std::min(255, static_cast<int>(tri.material.diffuseColor.z * intensity * 255));
+        
+        
+    
+        // **Remplissage du triangle dans le framebuffer**
+        pixel_->fillTriangle(framebuffer, framebufferDepth,
+                                        { p1.x, screenHeight - p1.y }, 
+                                        { p2.x, screenHeight - p2.y }, 
+                                        { p3.x, screenHeight - p3.y },
+                                        screenWidth, screenHeight, r, g, b, 
+                                        tri.v1.z, tri.v2.z, tri.v3.z);
+                                        
+          triIndex++;
+    
+
+}
+}
+
+
 void setup::drawScene(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, 
-               vehicule& car, std::vector<vehiculeAI*>& carAI, std::vector<decor*>& sceneDecor) {
+               vehicule& car, std::vector<vehiculeAI*>& carAI, std::vector<decor*>& sceneDecor,std::vector<decor*>& sceneArbres) {
     
-    
+     
      
     pixel_->clearBuffer();
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
  std::vector<Triangle> playerTriangles;
     std::vector<Triangle> AIPlayerTriangles;
     std::vector<Triangle> decorTriangles;
+    std::vector<Triangle> arbresTriangles;
      std::vector<Triangle> allTriangles;
      
 for(int i=0;i<sceneDecor.size();i++)
@@ -708,9 +861,11 @@ for(int i=0;i<sceneDecor.size();i++)
 
 	drawCar(playerTriangles,renderer, screenWidth, screenHeight,  camera,car);
 	
-   drawCar(AIPlayerTriangles,renderer, screenWidth, screenHeight,  camera,carAI);
+   drawCar(AIPlayerTriangles,renderer, screenWidth, screenHeight,  camera,carAI,car);
 	
 	drawDecor(decorTriangles, renderer,  screenWidth, screenHeight,  camera,  sceneDecor);
+	
+	drawDecor(arbresTriangles, renderer,  screenWidth, screenHeight,  camera,  sceneArbres);
 
     // **Création d'une texture pour dessiner le framebuffer**
     SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, 
@@ -778,9 +933,9 @@ for (const auto& tri : borderTriangles) {
     // **Affichage des triangles triés**
    
     drawPixels( playerTriangles,framebuffer,framebufferDepth, screenWidth, screenHeight,  camera,true);
-    drawPixels( AIPlayerTriangles,framebuffer,framebufferDepth, screenWidth, screenHeight,  camera,false);
+    drawPixels( AIPlayerTriangles,framebuffer,framebufferDepth, screenWidth, screenHeight,  camera,false,10000,30000,50000);
 	drawPixels( decorTriangles,framebuffer,framebufferDepth, screenWidth, screenHeight,  camera,true);
-//	drawPixels( allTriangles,framebuffer,framebufferDepth, screenWidth, screenHeight,  camera,true);
+	drawPixels( arbresTriangles,framebuffer,framebufferDepth, screenWidth, screenHeight,  camera,true);
 	
 	SDL_SetHint(SDL_HINT_RENDER_VSYNC, "0");
     // **Mise à jour de la texture**
@@ -790,8 +945,16 @@ for (const auto& tri : borderTriangles) {
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     
     pannel->renderPanel(renderer);
-    text->renderText(renderer);
     
+	for(int i=0;i<text.size()-1;i++)	
+     text[i]->renderText(renderer);
+     
+    if(temps>0)
+    {
+       text[10]->renderText(renderer);	
+	}
+  
+
     for(int i=0;i<myButton.size();i++)
     {
      myButton[i]->render(renderer);
@@ -811,11 +974,19 @@ for (const auto& tri : borderTriangles) {
     SDL_DestroyTexture(texture);
 }
 
-void setup::draw(SDL_Renderer* pRenderer)
+void setup::draw()
 {
 
 
- drawScene(pRenderer, 800, 600,  *camera, 
-              *car,carAI, cubes);
+ drawScene(game->getRenderer(), 800, 600,  *camera, 
+              *car,carAI, cubes,arbres);
 
 }
+
+gameLoop * setup::getGame()
+{
+	return game;
+}
+
+
+	

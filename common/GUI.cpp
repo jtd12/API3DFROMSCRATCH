@@ -59,7 +59,7 @@ void Button::updateTexture(SDL_Renderer* renderer) {
 void Button::setText(const std::string& newText,SDL_Renderer* renderer) {
         if (text != newText) {  // Met à jour uniquement si le texte change
             text = newText;
-            updateTexture(renderer);
+            //updateTexture(renderer);
         }
     }
 	 

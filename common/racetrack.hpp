@@ -51,6 +51,7 @@ class raceTrack
 				std::vector<std::tuple<vector3d, vector3d, vector3d, vector3d>> trackEdgesElevated;
 		std::vector<vector3d> generateWaypoints(const std::vector<vector3d>& controlPoints, float spacing);
 		bool  isPointOnTrack(float x, float z);
+
 };
 
 #endif

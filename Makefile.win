@@ -4,9 +4,9 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o gameSetup.o common/objloader.o common/skybox.o common/vector.o common/car.o common/decor.o common/matrix.o common/camera.o common/pixel.o common/racetrack.o common/boundingBox.o common/collisionDetection.o common/GUI.o common/carAI.o common/composant_vehicule.o gameLoop.o
-LINKOBJ  = main.o gameSetup.o common/objloader.o common/skybox.o common/vector.o common/car.o common/decor.o common/matrix.o common/camera.o common/pixel.o common/racetrack.o common/boundingBox.o common/collisionDetection.o common/GUI.o common/carAI.o common/composant_vehicule.o gameLoop.o
-LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -L"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/lib" -L"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/lib" -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf
+OBJ      = main.o gameSetup.o common/objloader.o common/skybox.o common/vector.o common/car.o common/decor.o common/matrix.o common/camera.o common/pixel.o common/racetrack.o common/boundingBox.o common/collisionDetection.o common/GUI.o common/carAI.o common/composant_vehicule.o
+LINKOBJ  = main.o gameSetup.o common/objloader.o common/skybox.o common/vector.o common/car.o common/decor.o common/matrix.o common/camera.o common/pixel.o common/racetrack.o common/boundingBox.o common/collisionDetection.o common/GUI.o common/carAI.o common/composant_vehicule.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -L"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/lib" -L"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/lib" -lmingw32 -lSDL2main -lSDL2  -lSDL2_ttf force3D/maths/vector.a force3D/maths/matrix.a force3D/collision/libboundingBox.a force3D/entities/camera/libcamera.a force3D/loader/libloader.a force3D/gameEngine/libgameLoop.a force3D/entities/object/libobject.a force3D/gameEngine/libCopyBuffer.a force3D/pixel/libdrawPixels.a force3D/pixel/libpixel.a force3D/entities/sky/libsky.a force3D/entities/heightmap/libheightmap.a
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/include/SDL2" -I"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/include/SDL2"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++" -I"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/include/SDL2" -I"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/include/SDL2"
 BIN      = Projet1.exe
@@ -71,6 +71,3 @@ common/carAI.o: common/carAI.cpp
 
 common/composant_vehicule.o: common/composant_vehicule.cpp
 	$(CPP) -c common/composant_vehicule.cpp -o common/composant_vehicule.o $(CXXFLAGS)
-
-gameLoop.o: gameLoop.cpp
-	$(CPP) -c gameLoop.cpp -o gameLoop.o $(CXXFLAGS)

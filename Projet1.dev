@@ -11,7 +11,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=-std=c++0x_@@__@@__@@_
-Linker=-lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf_@@_
+Linker=-lmingw32 -lSDL2main -lSDL2  -lSDL2_ttf_@@_force3D/maths/vector.a_@@_force3D/maths/matrix.a_@@_force3D/collision/libboundingBox.a_@@_force3D/entities/camera/libcamera.a_@@_force3D/loader/libloader.a_@@_force3D/gameEngine/libgameLoop.a_@@_force3D/entities/object/libobject.a_@@_force3D/gameEngine/libCopyBuffer.a_@@_force3D/pixel/libdrawPixels.a_@@_force3D/pixel/libpixel.a_@@_force3D/entities/sky/libsky.a_@@_force3D/entities/heightmap/libheightmap.a_@@_
 IsCpp=1
 Icon=
 ExeOutput=
@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=33
+UnitCount=31
 
 [VersionInfo]
 Major=1
@@ -310,16 +310,6 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit31]
-FileName=gameLoop.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit30]
 FileName=common\composant_vehicule.cpp
 CompileCpp=1
@@ -330,18 +320,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit32]
-FileName=gameLoop.hpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit33]
-FileName=common\decor.h
+FileName=gameLoop.hpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -382,6 +362,16 @@ BuildCmd=
 
 [Unit17]
 FileName=common\pixel.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit31]
+FileName=common\decor.h
 CompileCpp=1
 Folder=
 Compile=1

@@ -70,6 +70,8 @@ std::vector<std::vector<vector3d>> raceTrack::generateTerrain(float width, float
     return terrainTriangles;
 }
 
+
+
 vector3d raceTrack::catmullRom(const vector3d& p0, const vector3d& p1, const vector3d& p2, const vector3d& p3, float t) {
     float t2 = t * t;
     float t3 = t2 * t;

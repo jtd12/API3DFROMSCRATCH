@@ -11,6 +11,7 @@
 #include"common/boundingBox.hpp"
 #include"common/collisionDetection.hpp"
 #include"common/GUI.hpp"
+#include"force3D/gameEngine/gameLoop.hpp"
 
 
 
@@ -22,15 +23,17 @@ class setup
 	~setup();
 	void init();
 	void update(float t);
-	void update();
+	void update(setup* g);
 	void update(SDL_Renderer* renderer);
 	void processInput( SDL_Event event);
-	void draw(SDL_Renderer* pRenderer);
+	void draw();
 	void drawCar(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera,vehicule& car);
-	void drawCar(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera,std::vector<vehiculeAI*>& car);
+	void drawCar(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera,std::vector<vehiculeAI*>& car,vehicule& carSimple);
 	void drawDecor(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<decor*>& sceneDecor);
+	void drawPixels(std::vector<Triangle>& allTriangles,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera,bool isPlayer,int min,int max,int min2);
 	void drawPixels(std::vector<Triangle>& allTriangles,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera,bool isPlayer);
-	void drawScene(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera , vehicule& car, std::vector<vehiculeAI*>& carAI,  std::vector<decor*>& sceneDecor
+	void drawScene(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera , vehicule& car, std::vector<vehiculeAI*>& carAI,  std::vector<decor*>& sceneDecor,
+	std::vector<decor*>& sceneArbres
                );
 
  	vector3d computeNormal(const vector3d& v1, const vector3d& v2, const vector3d& v3);
@@ -40,12 +43,15 @@ class setup
 	void handleMouseMovement(float mouseDeltaX, float mouseDeltaY);
 	std::vector<vector3d> generateWaypoints(const std::vector<vector3d>& controlPoints, float spacing);
 	void initCars(std::vector<vector3d> waypoints);
+	gameLoop * getGame();
+
 	
 	private:
 	vehicule * car;
 	std::vector<vehiculeAI*> carAI;
 	raceTrack * race;
 	std::vector<decor*> cubes;
+	std::vector<decor*> arbres;
 	skybox* sky;
 	Camera *camera;
 	bool mouseDown;
@@ -62,11 +68,15 @@ class setup
 	AABB* carAABB;
 	std::vector<Button*> myButton;
 	Button* pannel;
-	Button * text;
+	std::vector<Button*>  text;
+
 	vector3d posCamera;
 	vector3d targetCamera;
 	vector3d upCamera;
-	
+	Uint32 lastSpeedChangeTime = SDL_GetTicks(); // récupère le temps en ms depuis le lancement
+	const Uint32 speedChangeInterval = 5000;    // 10 secondes = 10000 ms
+	int temps;
+	gameLoop *game;
 
 };
 

@@ -50,18 +50,31 @@ vector3d vehicule::getForwardVector() const {
     ).normalize(); // Normalisation pour éviter les problèmes d’échelle
 }
 
+
 void vehicule::update()
 {
-	
+	move();
+		
+	float deltaTime=1.0f;
 	s=speed;
 	rot.y=angle;
-	
+		
+	vector3d currentPos = getPosition();
+    float distanceMoved = (currentPos - lastPosition).length();
 
-	move();
+    if (distanceMoved < 0.1f) {  // seuil pour voiture bloquée
+        stuckTimer += deltaTime;
+    } else {
+        stuckTimer = 0.0f; // reset si elle bouge
+    }
 
-	position.y-=1.5f;
-	
-	
+    // 4?? Vérifie si bloquée depuis 5 secondes
+    if (stuckTimer >= 20.0f) {
+        isStuck = true;
+        unstuck(); // repositionne la voiture
+        stuckTimer = 0.0f;
+    }
+    
 	for(int i=0;i<2;i++)
 	  wheel[i]->setRotationyegal(rot.y);
 	  
@@ -70,8 +83,33 @@ void vehicule::update()
 	  wheel[i]->setRotationyegal(rot.y-3.0f);
 	}
 
+    lastPosition = currentPos;
+}
 
+void vehicule::setGravity()
+{
+	s=speed;
+	rot.y=angle;
+	position.y-=10.5f;
+	
+	for(int i=0;i<2;i++)
+	  wheel[i]->setRotationyegal(rot.y);
+	  
+	for(int i=2;i<4;i++)
+	{
+	  wheel[i]->setRotationyegal(rot.y-3.0f);
+	}
+	
 
+}
+
+void vehicule::unstuck() {
+    // 1. centre du circuit
+ 
+    // Déplacer la voiture en arrière
+    position = vector3d(6000,700,15000);
+	angle=1.5f;
+    std::cout << "Unstuck: reculé de 10 unités\n";
 }
 /*
 vector3d vehicule::getForwardVector2() const

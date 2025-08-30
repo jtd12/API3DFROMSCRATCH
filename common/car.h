@@ -2,6 +2,7 @@
 #define DEF_CAR_H
 #include"objloader.hpp"
 #include"composant_vehicule.hpp"
+#include"racetrack.hpp"
 #include<vector>
 
 class vehicule
@@ -12,6 +13,7 @@ class vehicule
 		void ouvrirPorte1();
 		void ouvrirPorte2();
 		void update();
+		void setGravity();
 		void applyMatrix();
 		void draw(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<Triangle>& allTriangles);
 		void setAngle(float a);
@@ -48,7 +50,7 @@ class vehicule
 		vector3d getRotation();
 		vector3d getForwardVector() const;
 		std::vector<Triangle> getTriangles();
-		bool player;
+		void unstuck();
 		
 	private:
 	objloader *obj;
@@ -77,6 +79,11 @@ class vehicule
 	float s;
 	float maxSpeed;	
 	std::vector<Triangle> triangles;
+	vector3d lastPosition;
+    float stuckTimer = 0.0f;  // temps passé immobile
+    bool isStuck = false;
+    int currentSegment = 1; // segment Catmull-Rom courant
+    float trackT = 0.0f;    // progression [0..1] dans ce segment
 
 
 };

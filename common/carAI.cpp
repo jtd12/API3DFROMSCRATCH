@@ -32,7 +32,7 @@ std::unordered_map<std::string, mesh*> ModelManager::models;
 		 wheel.push_back(new roue(vector3d(0,2000,5000)));
 		 
 		if (!waypoints.empty()) {
-            position =  waypoints[0]+pos; // Départ au premier waypoint
+            position =  waypoints[0]+pos+vector3d(0,-700,0); // Départ au premier waypoint
             direction.normalise(waypoints[1] - waypoints[0]); // Direction initiale
             
         }
@@ -48,6 +48,12 @@ std::unordered_map<std::string, mesh*> ModelManager::models;
 	void vehiculeAI::setSpeed(float s)
 	{
 	speed=s;	
+	}
+	
+	void vehiculeAI::setGravity()
+	{
+		position.y-=50.5f;
+
 	}
 	
 	void vehiculeAI::update()
@@ -163,10 +169,10 @@ std::unordered_map<std::string, mesh*> ModelManager::models;
     }
     }
     
-    bool vehiculeAI::isInViewFrustum(const Camera& cam) const {
-    vector3d camToObj = position - cam.getPosition();
+    bool vehiculeAI::isInViewFrustum(vehicule& car) const {
+    vector3d camToObj = position - car.getPosition();
     float dist = camToObj.length();
-    if (dist > 28000.0f) return false; // trop loin
+    if (dist > 25000.0f) return false; // trop loin
     return true;
 }
 
@@ -180,3 +186,8 @@ std::unordered_map<std::string, mesh*> ModelManager::models;
 	{
 		position.y=loc;
 	}
+	
+	float vehiculeAI::getSpeed()
+{
+	return speed;
+}
