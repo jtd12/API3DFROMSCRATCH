@@ -34,14 +34,19 @@ inline std::string getDirectory(const std::string& filepath) {
     return filepath.substr(0, pos + 1);
 }
 
+
+struct mesh {
+    std::vector<Triangle> triangles;  // tous les triangles du modèle
+};
+
 class objloader {
 AABB box;
 public:
 	objloader();
 	~objloader();
 	void smoothNormals(std::vector<Triangle>& triangles, std::vector<vector3d>& vertexNormals, int numVertices);
-	 bool loadMaterials(const std::string& mtlPath, std::map<std::string, Material>& materials);
-     bool load(const std::string& path,std::vector<Triangle>& triangles);
+	 static bool loadMaterials(const std::string& mtlPath, std::map<std::string, Material>& materials);
+     static bool load(const std::string& path,std::vector<Triangle>& triangles);
 	 void loadAnimation(std::vector<std::vector<Triangle>>& frames,
                               const std::string& filename,
                               unsigned int num);

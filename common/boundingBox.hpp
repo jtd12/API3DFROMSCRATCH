@@ -18,7 +18,7 @@
 #define M_PI    3.14159265358979323846
 #include <cstdlib>
 #include <algorithm>  // Pour std::swap
-#include"vector.h"
+#include"../force3D/maths/vector.h"
 
 class AABB {
     vector3d min;  // Coin inférieur gauche de la boîte

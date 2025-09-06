@@ -12,65 +12,11 @@ raceTrack::~raceTrack()
 
 
 
-void raceTrack::initializeTrack(const std::vector<vector3d>& controlPoints, int segmentsPerCurve, float width) {
+void raceTrack::initializeTrack(const std::vector<vector3d>& controlPoints, int segmentsPerCurve, float width,heightmapsetup& heightmap) {
     std::vector<vector3d> path = generateTrackPath(controlPoints, segmentsPerCurve);
-    trackEdges = generateTrackEdges(path, width); // Stocker les bords du circuit
-    trackEdgesElevated = generateTrackEdgesWithElevation(path, 3400, 400);
+    trackEdges = generateTrackEdges(path, 3400.0f, heightmap, TERRAINHEIGHT, 500.0f); // Stocker les bords du circuit
+    trackEdgesElevated = generateTrackEdgesWithElevation(path, 3400, 400,heightmap,TERRAINHEIGHT,TERRAINSIZE,-1000);
 }
-
-float raceTrack::getTerrainHeight(float x, float z) {
-    // Trouver le point de piste le plus proche
- if (trackEdges.empty()) return 0.0f;
-
-    float minDist = FLT_MAX;
-    float closestY = 0.0f;
-
-    for (const auto& edge : trackEdges) {
-        float dx = edge.first.x - x;
-        float dz = edge.first.z - z;
-        float dist = dx * dx + dz * dz;
-
-        if (dist < minDist) {
-            minDist = dist;
-            closestY = edge.first.y;
-        }
-    }
-
-    float heightVariation = (std::sin(x * 0.001f) + std::cos(z * 0.001f)) * 100.0f;
-    return closestY + heightVariation; // Ajoute du relief
-}
-
-std::vector<std::vector<vector3d>> raceTrack::generateTerrain(float width, float length, int resolution) {
-    std::vector<std::vector<vector3d>> terrainTriangles;
-
-  float dx = width / resolution;
-  float dz = length / resolution;
-
-    for (int i = 0; i < resolution; i++) {
-        for (int j = 0; j < resolution; j++) {
-            float x1 = i * dx - width / 2;
-            float z1 = j * dz - length / 2;
-            float x2 = (i + 1) * dx - width / 2;
-            float z2 = (j + 1) * dz - length / 2;
-
-            // Hauteur ajustée pour suivre le circuit
-            float y1 = getTerrainHeight(x1, z1);
-            float y2 = getTerrainHeight(x2, z1);
-            float y3 = getTerrainHeight(x1, z2);
-            float y4 = getTerrainHeight(x2, z2);
-
-            // Triangle 1
-            terrainTriangles.push_back({ vector3d(x1, y1, z1), vector3d(x2, y2, z1), vector3d(x1, y3, z2) });
-
-            // Triangle 2
-            terrainTriangles.push_back({ vector3d(x2, y2, z1), vector3d(x2, y4, z2), vector3d(x1, y3, z2) });
-        }
-    }
-
-    return terrainTriangles;
-}
-
-
 
 vector3d raceTrack::catmullRom(const vector3d& p0, const vector3d& p1, const vector3d& p2, const vector3d& p3, float t) {
     float t2 = t * t;
@@ -102,24 +48,34 @@ std::vector<vector3d> raceTrack:: generateTrackPath(const std::vector<vector3d>&
 
 
 
-std::vector<std::pair<vector3d, vector3d>> raceTrack::generateTrackEdges(const std::vector<vector3d>& path, float width) {
+std::vector<std::pair<vector3d, vector3d>> raceTrack::generateTrackEdges(const std::vector<vector3d>& path, float width, heightmapsetup& heightmap, float size, float h) {
     std::vector<std::pair<vector3d, vector3d>> edges;
     
+
     for (size_t i = 0; i < path.size() - 1; i++) {
         vector3d tangent = (path[i+1] - path[i]).normalize();
-        vector3d normal = { -tangent.z, 0, tangent.x };  // Perpendiculaire au sol
-        
+        vector3d normal = { -tangent.z, 0, tangent.x };  // perpendiculaire au sol
+
+        // Calcul des bords gauche et droit
         vector3d leftEdge = path[i] + normal * (width * 0.5f);
         vector3d rightEdge = path[i] - normal * (width * 0.5f);
-        
+
+        // Ajuster la hauteur avec la heightmap
+        leftEdge.y  = heightmap.getHeightAt(leftEdge.x, leftEdge.z, size, h)  - 100.0f;
+        rightEdge.y = heightmap.getHeightAt(rightEdge.x, rightEdge.z, size, h) - 100.0f;
+
         edges.emplace_back(leftEdge, rightEdge);
     }
-    
+
     return edges;
 }
 
 std::vector<std::tuple<vector3d, vector3d, vector3d, vector3d>> 
-raceTrack::generateTrackEdgesWithElevation(const std::vector<vector3d>& path, float width, float elevation) {
+raceTrack::generateTrackEdgesWithElevation(const std::vector<vector3d>& path, float width, float elevation,
+heightmapsetup& heightmap,
+    float size,
+    float h,
+    float terrainOffset) {
     std::vector<std::tuple<vector3d, vector3d, vector3d, vector3d>> edges;
 
     for (size_t i = 0; i < path.size() - 1; i++) {
@@ -128,6 +84,9 @@ raceTrack::generateTrackEdgesWithElevation(const std::vector<vector3d>& path, fl
 
         vector3d leftEdge = path[i] + normal * (width * 0.5f);
         vector3d rightEdge = path[i] - normal * (width * 0.5f);
+        
+        leftEdge.y  = heightmap.getHeightAt(leftEdge.x, leftEdge.z, size, h) + terrainOffset;
+        rightEdge.y = heightmap.getHeightAt(rightEdge.x, rightEdge.z, size, h) + terrainOffset;
         
         vector3d leftElevated = leftEdge + vector3d(0, elevation, 0);
         vector3d rightElevated = rightEdge + vector3d(0, elevation, 0);
@@ -138,7 +97,8 @@ raceTrack::generateTrackEdgesWithElevation(const std::vector<vector3d>& path, fl
     return edges;
 }
 
-std::vector<std::vector<vector3d>> raceTrack::generateTrackBorders(const std::vector<std::tuple<vector3d, vector3d, vector3d, vector3d>>& edges) {
+std::vector<std::vector<vector3d>> raceTrack::generateTrackBorders(const std::vector<std::tuple<vector3d, vector3d, vector3d, vector3d>>& edges,heightmapsetup& heightmap
+,float size, float h, float terrainOffset) {
     std::vector<std::vector<vector3d>> borderTriangles;
 
     size_t gap = 40; // nombre de segments sans bordure à la fin
@@ -156,6 +116,9 @@ std::vector<std::vector<vector3d>> raceTrack::generateTrackBorders(const std::ve
         vector3d rightEdgeNext = std::get<1>(edges[next]);
         vector3d leftElevatedNext = std::get<2>(edges[next]);
         vector3d rightElevatedNext = std::get<3>(edges[next]);
+        
+        
+
 
         // Optionnel : vérifier l'angle entre segments
         vector3d dirCurrent = (leftEdgeNext - leftEdge).normalize();
@@ -168,6 +131,16 @@ std::vector<std::vector<vector3d>> raceTrack::generateTrackBorders(const std::ve
         if (angle > M_PI / 4) {
             continue;
         }
+        
+      leftEdge.y  = heightmap.getHeightAt(leftEdge.x, leftEdge.z, size, h) + terrainOffset;
+        rightEdge.y = heightmap.getHeightAt(rightEdge.x, rightEdge.z, size, h) + terrainOffset;
+        leftEdgeNext.y  = heightmap.getHeightAt(leftEdgeNext.x, leftEdgeNext.z, size, h) + terrainOffset;
+        rightEdgeNext.y = heightmap.getHeightAt(rightEdgeNext.x, rightEdgeNext.z, size, h) + terrainOffset;
+        
+        leftElevated = leftEdge + vector3d(0, 400, 0);   // ou l'épaisseur de bordure que tu veux
+		rightElevated = rightEdge + vector3d(0, 400, 0);
+		leftElevatedNext = leftEdgeNext + vector3d(0, 400, 0);
+		rightElevatedNext = rightEdgeNext + vector3d(0, 400, 0);
 
         // Générer les bordures latérales uniquement
         borderTriangles.push_back({ leftEdge, leftElevated, leftEdgeNext });
@@ -175,6 +148,8 @@ std::vector<std::vector<vector3d>> raceTrack::generateTrackBorders(const std::ve
 
         borderTriangles.push_back({ rightEdge, rightEdgeNext, rightElevated });
         borderTriangles.push_back({ rightElevated, rightEdgeNext, rightElevatedNext });
+        
+ 
     }
 
     return borderTriangles;
@@ -244,10 +219,10 @@ std::vector<std::vector<vector3d>> raceTrack::generateTrackMesh(const std::vecto
     return triangles;
 }
 
-void raceTrack::drawTriangle(std::vector<Triangle>& allTriangles,pixel* p,Uint32* framebuffer,float* framebufferDepth,int screenWidth, int screenHeight,const vector3d& v1, const vector3d& v2, const vector3d& v3,const Camera& camera,
+void raceTrack::drawTriangle(std::vector<Triangle>& allTriangles,pixel* p,Uint32* framebuffer,float* framebufferDepth,int screenWidth, int screenHeight,const vector3d& v1, const vector3d& v2, const vector3d& v3,const camerasetup& camera,
 bool isTrack,bool isBorder) {
 	
-    Matrix4x4 viewProjectionMatrix = camera.getProjectionMatrix() * camera.getViewMatrix(camera, 1);
+    Matrix4x4 viewProjectionMatrix = camera.getProjectionMatrix() * camera.getViewMatrix();
     Matrix4x4 raceTransform = translationMatrix * rotationMatrixX * scaleMatrix;
     Matrix4x4 finalMatrix = viewProjectionMatrix * raceTransform;
 

@@ -15,11 +15,10 @@
 #include <cfloat>
 #include<cmath>
 #define MAXLEVEL 4
-#define M_PI    3.14159265358979323846
 #define SDL_MAIN_HANDLED
 #include "C:\library\SDL2-2.0.12\x86_64-w64-mingw32\include\SDL2\SDL.h"
 #include"C:\library\SDL2_ttf-2.19.3\x86_64-w64-mingw32\include\SDL2\SDL_ttf.h"
-#include"vector.h"
+#include"../force3D/maths/vector.h"
 
 class Button {
 	

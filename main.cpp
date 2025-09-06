@@ -20,13 +20,13 @@ int main(int argc, char** argv) {
 		
 		game->getGame()->loop();
 		
-		for (auto &e : game->getGame()->getEvents()) {
+	for (auto &e : game->getGame()->getEvents()) {
         game->processInput(e);
     }
 		game->update(game->getGame()->getRenderer());
        	game->update(game);
 		game->draw();
-        game->getGame()->draw();
+       game->getGame()->draw();
     }
 	game->getGame()->destroyGameLoop();
 

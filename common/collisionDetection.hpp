@@ -15,12 +15,11 @@
 #include <cfloat>
 #include<cmath>
 #define MAXLEVEL 4
-#define M_PI    3.14159265358979323846
 #define SDL_MAIN_HANDLED
 #include"C:\library\SDL2-2.0.12\x86_64-w64-mingw32\include\SDL2\SDL.h"
 #include <cstdlib>
 #include <algorithm>  // Pour std::swap
-#include"vector.h"
+#include"../force3D/maths/vector.h"
 #include"boundingBox.hpp"
 
 class collisions

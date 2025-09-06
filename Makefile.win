@@ -4,8 +4,8 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o gameSetup.o common/objloader.o common/skybox.o common/vector.o common/car.o common/decor.o common/matrix.o common/camera.o common/pixel.o common/racetrack.o common/boundingBox.o common/collisionDetection.o common/GUI.o common/carAI.o common/composant_vehicule.o
-LINKOBJ  = main.o gameSetup.o common/objloader.o common/skybox.o common/vector.o common/car.o common/decor.o common/matrix.o common/camera.o common/pixel.o common/racetrack.o common/boundingBox.o common/collisionDetection.o common/GUI.o common/carAI.o common/composant_vehicule.o
+OBJ      = main.o gameSetup.o common/skybox.o common/racetrack.o common/boundingBox.o common/collisionDetection.o common/GUI.o common/composant_vehicule.o common/heightmap.o common/camera.o common/vehicules.o common/vehiculesAI.o common/decor.o
+LINKOBJ  = main.o gameSetup.o common/skybox.o common/racetrack.o common/boundingBox.o common/collisionDetection.o common/GUI.o common/composant_vehicule.o common/heightmap.o common/camera.o common/vehicules.o common/vehiculesAI.o common/decor.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -L"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/lib" -L"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/lib" -lmingw32 -lSDL2main -lSDL2  -lSDL2_ttf force3D/maths/vector.a force3D/maths/matrix.a force3D/collision/libboundingBox.a force3D/entities/camera/libcamera.a force3D/loader/libloader.a force3D/gameEngine/libgameLoop.a force3D/entities/object/libobject.a force3D/gameEngine/libCopyBuffer.a force3D/pixel/libdrawPixels.a force3D/pixel/libpixel.a force3D/entities/sky/libsky.a force3D/entities/heightmap/libheightmap.a
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/include/SDL2" -I"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/include/SDL2"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++" -I"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/include/SDL2" -I"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/include/SDL2"
@@ -30,29 +30,8 @@ main.o: main.cpp
 gameSetup.o: gameSetup.cpp
 	$(CPP) -c gameSetup.cpp -o gameSetup.o $(CXXFLAGS)
 
-common/objloader.o: common/objloader.cpp
-	$(CPP) -c common/objloader.cpp -o common/objloader.o $(CXXFLAGS)
-
 common/skybox.o: common/skybox.cpp
 	$(CPP) -c common/skybox.cpp -o common/skybox.o $(CXXFLAGS)
-
-common/vector.o: common/vector.cpp
-	$(CPP) -c common/vector.cpp -o common/vector.o $(CXXFLAGS)
-
-common/car.o: common/car.cpp
-	$(CPP) -c common/car.cpp -o common/car.o $(CXXFLAGS)
-
-common/decor.o: common/decor.cpp
-	$(CPP) -c common/decor.cpp -o common/decor.o $(CXXFLAGS)
-
-common/matrix.o: common/matrix.cpp
-	$(CPP) -c common/matrix.cpp -o common/matrix.o $(CXXFLAGS)
-
-common/camera.o: common/camera.cpp
-	$(CPP) -c common/camera.cpp -o common/camera.o $(CXXFLAGS)
-
-common/pixel.o: common/pixel.cpp
-	$(CPP) -c common/pixel.cpp -o common/pixel.o $(CXXFLAGS)
 
 common/racetrack.o: common/racetrack.cpp
 	$(CPP) -c common/racetrack.cpp -o common/racetrack.o $(CXXFLAGS)
@@ -66,8 +45,20 @@ common/collisionDetection.o: common/collisionDetection.cpp
 common/GUI.o: common/GUI.cpp
 	$(CPP) -c common/GUI.cpp -o common/GUI.o $(CXXFLAGS)
 
-common/carAI.o: common/carAI.cpp
-	$(CPP) -c common/carAI.cpp -o common/carAI.o $(CXXFLAGS)
-
 common/composant_vehicule.o: common/composant_vehicule.cpp
 	$(CPP) -c common/composant_vehicule.cpp -o common/composant_vehicule.o $(CXXFLAGS)
+
+common/heightmap.o: common/heightmap.cpp
+	$(CPP) -c common/heightmap.cpp -o common/heightmap.o $(CXXFLAGS)
+
+common/camera.o: common/camera.cpp
+	$(CPP) -c common/camera.cpp -o common/camera.o $(CXXFLAGS)
+
+common/vehicules.o: common/vehicules.cpp
+	$(CPP) -c common/vehicules.cpp -o common/vehicules.o $(CXXFLAGS)
+
+common/vehiculesAI.o: common/vehiculesAI.cpp
+	$(CPP) -c common/vehiculesAI.cpp -o common/vehiculesAI.o $(CXXFLAGS)
+
+common/decor.o: common/decor.cpp
+	$(CPP) -c common/decor.cpp -o common/decor.o $(CXXFLAGS)

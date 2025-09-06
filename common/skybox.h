@@ -1,6 +1,6 @@
 #ifndef DEF_SKYBOX_H
 #define DEF_SKYBOX_H
-#include"vector.h"
+#include"../force3D/maths/vector.h"
 #include<iostream>
 #define M_PI    3.14159265358979323846
 #define SDL_MAIN_HANDLED

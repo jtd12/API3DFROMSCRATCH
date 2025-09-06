@@ -20,9 +20,9 @@
 #include"C:\library\SDL2-2.0.12\x86_64-w64-mingw32\include\SDL2\SDL.h"
 #include <cstdlib>
 #include <algorithm>  // Pour std::swap
-#include"objloader.hpp"
-#include"vector.h"
-#include"matrix.hpp"
+#include"../force3D/loader/objloader.hpp"
+#include"../force3D/maths/vector.h"
+#include"../force3D/maths/matrix.hpp"
 using namespace std;
 
 class grid

@@ -9,7 +9,6 @@
 #include"../../loader/objloader.hpp"
 
 
-
 class vec
 {
 public: 
@@ -30,6 +29,7 @@ class object
 		object(vector3d pos,vector3d rot,vector3d scaling,const std::string& path,bool wireframe);
 		object(vector3d pos,vector3d rot,vector3d scaling,object* baseModel);
 		object(vector3d pos,vector3d rot,vector3d scaling, const std::string& path,bool wireframe,int time);
+		object(vector3d pos, vector3d rot, vector3d scaling, mesh* sharedMesh, bool wireframe);
 		~object();
 		void update(std::vector<Triangle>& triangles);
 		void applyMatrix();
@@ -82,6 +82,7 @@ class object
     float timer = 0.0f;                // accumulateur de temps
 	AABB* boundingBox;
 	std::vector<std::vector<Triangle>> animationFrames;
+	mesh*meshData;
 	
 };
 #endif

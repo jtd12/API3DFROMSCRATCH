@@ -1,75 +1,79 @@
-#include"decor.h"
+#include"decor.hpp"
 
-decor::decor(vector3d pos,vector3d rot,const std::string& path)
+decorSetup::decorSetup(vector3d pos,vector3d rot,vector3d s,const std::string& path)
 {
-		obj=new objloader();
-		
-		obj->load(path,triangles);
-		rotation=rot;
-		scale=vector3d(5,5,5);
-		position=pos;
+
+	init(pos,rot,s,path);
+}
+void decorSetup::init(vector3d pos,vector3d rot,vector3d s,const std::string& path)
+{
+	
+	position=pos;
+	scale=s;
+	rotation=rot;
+	object* model = new object(position, rotation, scale, path,false);
+
+    decor_.push_back(model);
+
 		float r = static_cast<float>(rand() % 256) / 255.0f;
 	    float g = static_cast<float>(rand() % 256) / 255.0f;
 	    float b = static_cast<float>(rand() % 256) / 255.0f;
     	
-		setColor(vector3d(r, g, b));
+		model->setColor(vector3d(r, g, b));  // si setColor est défini dans object
 
 		
 }
 
-decor::~decor()
+decorSetup::~decorSetup()
 {
 
-	  delete obj;
 }
 
-AABB* decor::getBoundingBox()
+AABB* decorSetup::getBoundingBox()
 {
 	return boundingBox;
 }
 
-void decor::update()
+void decorSetup::update()
 {
 	
 }
 
-void decor::draw(SDL_Renderer* renderer, int screenWidth, int screenHeight, const Camera& camera, std::vector<Triangle>& allTriangles) {
+void decorSetup::draw(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight,camerasetup* camera) {
 
-    Matrix4x4 viewProjectionMatrix = camera.getProjectionMatrix() * camera.getViewMatrix(camera,1);
-	Matrix4x4 decorTransform =   rotationMatrixY * translationMatrix * scaleMatrix;
-	Matrix4x4 finalMatrix = viewProjectionMatrix * decorTransform;
+  		for(int i=0;i<decor_.size();i++)
+{
+	decor_[i]->getTranslationMatrix().setTranslation(position.x,position.y,position.z);
+	decor_[i]->getRotationMatrixX().setRotationX(rotation.x);
+	decor_[i]->getRotationMatrixY().setRotationY(rotation.y);
+	decor_[i]->getRotationMatrixZ().setRotationZ(rotation.z);
 
-    for (auto& tri : triangles) {
-        Triangle transformedTri = tri;
-        transformedTri.v1 = finalMatrix.apply(tri.v1);
-        transformedTri.v2 = finalMatrix.apply(tri.v2);
-        transformedTri.v3 = finalMatrix.apply(tri.v3);
-        transformedTri.avgDepth = (transformedTri.v1.z + transformedTri.v2.z + transformedTri.v3.z) / 3.0f;
+}
+	
+	for(int i=0;i<decor_.size();i++)
+	{
+//	vehicule[i]->rotationMatrixY.setRotationY(rot);
 
-        allTriangles.push_back(transformedTri);
-    }
+      decor_[i]->draw(renderer, screenWidth, screenHeight, *camera->getCamera(), allTriangles);
+		
+	}
+	
 }
 
 
-void decor::applyMatrix(){
+void decorSetup::applyMatrix(){
 translationMatrix.setTranslation(position.x, position.y, position.z);
 rotationMatrixY.setRotationY(rotation.y);
 scaleMatrix.setScaling(scale.x,scale.y,scale.z);
 //draw(pRenderer,800,600,camera); // Affichage du modèle
 }
 
- bool decor::isCloseTo( vector3d other,float threshold) const{
+ bool decorSetup::isCloseTo( vector3d other,float threshold) const{
          return (position - other).length() > threshold; // distance Euclidienne
     }
     
 
-void decor::setColor(const vector3d& color) {
-    for (auto& tri : triangles) {
-        tri.material.diffuseColor = color;
-    }
-}
-
- vector3d decor::getNormal() const {
+ vector3d decorSetup::getNormal() const {
         vector3d avgNormal(0, 0, 0);
         int count = 0;
 
@@ -83,13 +87,16 @@ void decor::setColor(const vector3d& color) {
     }
 
 
-bool decor::isInViewFrustum(const Camera& cam) const {
-    vector3d camToObj = position - cam.getPosition();
-    float dist = camToObj.length();
-    if (dist > 40000.0f) return false; // trop loin
-    return true;
+void decorSetup::setScale(vector3d s)
+{
+	scale=s;
 }
 
-
+bool decorSetup::isInViewFrustum(vehiculesetup& car) const {
+    vector3d camToObj = position - car.getPosition();
+    float dist = camToObj.length();
+    if (dist > 50000.0f) return false; // trop loin
+    return true;
+}
 
 

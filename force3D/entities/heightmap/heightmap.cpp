@@ -72,8 +72,7 @@ std::vector<Triangle> height::generateTriangles(float size, float h)
     std::vector<Triangle> tris;
     tris.reserve((heights.size() - 1) * (heights[0].size() - 1) * 2);
 
-    Material mat;
-    mat.diffuseColor = vector3d(1.0f, 1.0f, 1.0f);
+
 
     for (int i = 0; i < heights.size() - 1; i++) {
         for (int j = 0; j < heights[0].size() - 1; j++) {
@@ -81,6 +80,12 @@ std::vector<Triangle> height::generateTriangles(float size, float h)
             vector3d v10((i+1) * size, heights[i+1][j] * h,   j * size);
             vector3d v01(i * size,     heights[i][j+1] * h,  (j+1) * size);
             vector3d v11((i+1) * size, heights[i+1][j+1] * h,(j+1) * size);
+            
+            float baseG = 0.5f + static_cast<float>(rand()) / RAND_MAX * 1.0f;
+            float baseR = static_cast<float>(rand()) / RAND_MAX * .5f;
+            float baseB = static_cast<float>(rand()) / RAND_MAX * .7f;
+            Material mat;
+            mat.diffuseColor = vector3d(baseR, baseG, baseB);
 
             tris.emplace_back(v00, v10, v11, mat);
             tris.emplace_back(v00, v11, v01, mat);
@@ -104,8 +109,10 @@ void height::renderTriangles(pixel* pixel_,std::vector<Triangle>& allTriangles,U
  	Matrix4x4 viewProjectionMatrix = camera.getProjectionMatrix() * camera.getViewMatrix(camera,1);
 	Matrix4x4 modelTransform =   translationMatrix * scaleMatrix;
 	Matrix4x4 finalMatrix = viewProjectionMatrix * modelTransform;
+	
 
-    for (const auto& tri : allTriangles) {
+
+    for ( auto& tri : allTriangles) {
         // Appliquer la transformation (ici identités, à adapter si besoin)
         vector3d tV1 = finalMatrix.apply(tri.v1);
         vector3d tV2 = finalMatrix.apply(tri.v2);
@@ -125,9 +132,12 @@ void height::renderTriangles(pixel* pixel_,std::vector<Triangle>& allTriangles,U
         vector3d lightDir = vector3d(100.0f, 100.0f, 15.0f).normalize();
         float intensity = std::max(0.0f, normal.dotproduct(lightDir));
 
-        Uint8 r = std::min(255, static_cast<int>(150 * intensity));
-        Uint8 g = r;
-        Uint8 b = r;
+        vector3d baseColor = tri.material.diffuseColor;
+
+		// Appliquer l’éclairage (avec un minimum pour éviter le noir complet)
+		float r = baseColor.x * (0.3f + 0.7f * intensity*200);
+		float g = baseColor.y * (0.3f + 0.7f * intensity*200);
+		float b = baseColor.z * (0.3f + 0.7f * intensity*200);
 
         pixel_->fillTriangle(framebuffer, framebufferDepth, 
                                          { p1.x, screenHeight - p1.y }, 
@@ -141,6 +151,27 @@ void height::renderTriangles(pixel* pixel_,std::vector<Triangle>& allTriangles,U
 
 }
 
+
+float height::getHeightAt(float x, float z, float size, float h) {
+    int i = static_cast<int>(x / size);
+    int j = static_cast<int>(z / size);
+
+    if (i < 0 || j < 0 || i >= heights.size()-1 || j >= heights[0].size()-1)
+        return 0.0f; // en dehors de la heightmap
+
+    float fx = (x / size) - i;
+    float fz = (z / size) - j;
+
+    // interpolation bilinéaire
+    float h00 = heights[i][j] * h;
+    float h10 = heights[i+1][j] * h;
+    float h01 = heights[i][j+1] * h;
+    float h11 = heights[i+1][j+1] * h;
+
+    float h0 = h00 * (1-fx) + h10 * fx;
+    float h1 = h01 * (1-fx) + h11 * fx;
+    return h0 * (1-fz) + h1 * fz;
+}
 
 Matrix4x4& height::getTranslationMatrix()
 {

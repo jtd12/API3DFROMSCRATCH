@@ -1,5 +1,7 @@
 #include"object.h"
 
+
+
 object::object(vector3d pos,vector3d rot,vector3d scaling, const std::string& path,bool wireframe)
 {
 	
@@ -60,6 +62,25 @@ object::object(vector3d pos,vector3d rot,vector3d scaling,object* baseModel)
     
  
 }
+
+object::object(vector3d pos, vector3d rot, vector3d scaling, mesh* sharedMesh, bool wireframe) {
+    position = pos;
+    rotation = rot;
+    scale = scaling;
+
+    scaleMatrix.setScaling(scale.x, scale.y, scale.z);
+    translationMatrix.setTranslation(position.x, position.y, position.z);
+    rotationMatrixX.setRotationX(rotation.x);
+    rotationMatrixY.setRotationY(rotation.y);
+    rotationMatrixZ.setRotationZ(rotation.z);
+
+    meshData = sharedMesh;
+    triangles = sharedMesh->triangles;
+
+    for (auto& tri : triangles)
+        tri.wireframe = wireframe;
+}
+
 
 object::~object()
 {

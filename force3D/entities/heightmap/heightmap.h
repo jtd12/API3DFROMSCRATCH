@@ -24,6 +24,7 @@ class height
    		void drawTriangle(std::vector<Triangle>& allTriangles,pixel* p,Uint32* framebuffer,float* framebufferDepth,int screenWidth, int screenHeight,const vector3d& v1, const vector3d& v2, const vector3d& v3,const Camera& camera);
 		void renderTriangles(pixel* pixel_,std::vector<Triangle>& allTriangles,Uint32* framebuffer,float* framebufferDepth,int screenWidth, int screenHeight,const Camera& camera);
 		void drawHeight(float size,float h,pixel* pixel_,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera);
+		float getHeightAt(float x, float z, float size, float h);
 		Matrix4x4& getTranslationMatrix();
     	Matrix4x4& getScaleMatrix();
     	
