@@ -38,11 +38,11 @@ vehiculesAISetup::~vehiculesAISetup()
 
     // Waypoints
     waypoints_ = waypoints;
-
+	radius=400.0f; // ex: 2.0f
     // Position, rotation, scale
     position = waypoints[startIndex] + vector3d(0, -700, 0);;
     rotation = vector3d(0,0,0);
-    scale = vector3d(50,50,50);
+    scale = vector3d(100,100,100);
     speed = 0;
     direction = vector3d(1,0,0);
 
@@ -60,6 +60,12 @@ vehiculesAISetup::~vehiculesAISetup()
    
         
 	}
+	
+	
+float vehiculesAISetup::getRadius()
+{
+		return radius;
+}
 	
 void vehiculesAISetup::setSpeed(float s)
 	{
@@ -80,6 +86,11 @@ vector3d vehiculesAISetup::getPosition()
 void vehiculesAISetup::setLocation(vector3d loc)
 {
 	position=loc;
+}
+
+void vehiculesAISetup::setLocationInc(vector3d loc)
+{
+	position+=loc;
 }
 
 void vehiculesAISetup::setLocation(float locY)
@@ -190,10 +201,10 @@ void vehiculesAISetup::draw(std::vector<Triangle>& allTriangles,SDL_Renderer* re
 
         // Offsets roues
         vector3d wheelOffsets[4] = {
-            vector3d(150, -25, 160),
-            vector3d(-250, -25, 160),
-            vector3d(150, -25, -160),
-            vector3d(-250, -25, -160)
+        vector3d(350, -25, 320),  // Avant gauche
+        vector3d(-450, -25, 320), // Avant droite
+        vector3d(350, -25, -320), // Arrière gauche
+        vector3d(-450, -25, -320) // Arrière droite
         };
 
         Matrix4x4 rotXMat; rotXMat.setRotationX(rotation.x);
@@ -232,3 +243,5 @@ bool vehiculesAISetup::isInViewFrustum(vehiculesetup& car) const {
     if (dist > 15000.0f) return false; // trop loin
     return true;
 }
+
+

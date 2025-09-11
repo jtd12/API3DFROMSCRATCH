@@ -15,6 +15,7 @@ class heightmapsetup
 		void update();
 		float getHeightAt(float x, float z, float size, float h);
 		void draw(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, camerasetup* camera,drawPixels* pixel,Uint32* framebuffer,float* framebufferDepth);
+		height* getHeight();
 };
 
 #endif

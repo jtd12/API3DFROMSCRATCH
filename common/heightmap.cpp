@@ -27,3 +27,8 @@ float heightmapsetup::getHeightAt(float x, float z, float size, float h)
 {
 	return heightMap->getHeightAt(x,z,size,h);
 }
+
+height* heightmapsetup::getHeight()
+{
+	return heightMap;
+}

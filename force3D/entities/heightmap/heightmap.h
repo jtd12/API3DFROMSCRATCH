@@ -9,7 +9,8 @@
 #include"../../loader/objloader.hpp"
 #include"../../pixel/pixel.hpp"
 #include"../../loader/triangles.hpp"
-
+#define TERRAINHEIGHT 1000
+#define TERRAINSIZE   10000
 
 class height
 {

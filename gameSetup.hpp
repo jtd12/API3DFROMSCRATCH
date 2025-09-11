@@ -12,6 +12,9 @@
 #include"force3D/entities/sky/skybox.h"
 #include"common/racetrack.hpp"
 #include"common/GUI.hpp"
+#include"common/captureVideos.hpp"
+#include"common/sound.hpp"
+#include"common/captureSound.hpp"
 #include<iostream>
 #define WIDTH 800 
 #define HEIGHT 600
@@ -36,7 +39,9 @@ class setup
 	bool isTriangleVisible(const vector3d& normal, const vector3d& cameraPosition, const vector3d& trianglePoint);
 	void handleMouseMovement(float mouseDeltaX, float mouseDeltaY);
 	void followCamera(vector3d carPosition, vector3d carForward, float yawInput, float pitchInput);
-		
+	bool checkCollision(vehiculesAISetup* a, vehiculesAISetup* b);
+	bool checkCollision(vehiculesAISetup* a, vehiculesetup* b);
+	
 	private:
 	vehiculesetup* car;
 	std::vector<object*> vehicule;
@@ -53,10 +58,11 @@ class setup
 	std::vector<std::pair<vector3d, vector3d>> trackEdges;
 	std::vector<vector3d> trackPath;
 	std::vector<vector3d> controlPoints;
+	std::vector<vector3d> waypoints;
 	std::vector<std::vector<vector3d>> trackTriangles;
 	std::vector<std::vector<vector3d>> borderTriangles;
 	std::vector<std::vector<vector3d>> terrainTriangles;
-	raceTrack * race;
+	raceTrackSetup * race;
 	bool mouseDown;
 	int lastX = 0, lastY = 0; // Position précédente de la souris
 	collisions* collid;
@@ -68,9 +74,16 @@ class setup
 	std::vector<decorSetup*> arbres;
 	std::vector<decorSetup*> triangles;
 	std::vector<decorSetup*> animals;
+	std::vector<decorSetup*> cylindres;
 	Uint32 lastSpeedChangeTime = SDL_GetTicks(); // récupère le temps en ms depuis le lancement
 	const Uint32 speedChangeInterval = 5000;    // 10 secondes = 10000 ms
 	int temps;
+	captureVideoSetup* capture_video;
+	soundSetup* sounds;
+	soundSetup* sounds2;
+	captureSoundSetup* capture_sound;
+	bool recording;
+
 };
 
 #endif

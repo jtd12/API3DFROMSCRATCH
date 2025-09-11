@@ -4,14 +4,14 @@ Name=Projet1
 Type=1
 Ver=2
 ObjFiles=
-Includes=C:\library\SDL2-2.0.12\x86_64-w64-mingw32\include\SDL2;C:\library\SDL2_ttf-2.19.3\x86_64-w64-mingw32\include\SDL2
-Libs=C:\library\SDL2-2.0.12\x86_64-w64-mingw32\lib;C:\library\SDL2_ttf-2.19.3\x86_64-w64-mingw32\lib
+Includes=C:\library\SDL2-2.0.12\x86_64-w64-mingw32\include\SDL2;C:\library\SDL2_ttf-2.19.3\x86_64-w64-mingw32\include\SDL2;"C:\library\SDL_Image 2.0\include\SDL2";C:\library\SDL2_mixer-2.5.3\x86_64-w64-mingw32\include\SDL2
+Libs=C:\library\SDL2-2.0.12\x86_64-w64-mingw32\lib;C:\library\SDL2_ttf-2.19.3\x86_64-w64-mingw32\lib;"C:\library\SDL_Image 2.0\lib";C:\library\SDL2_mixer-2.5.3\x86_64-w64-mingw32\lib
 PrivateResource=
 ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=-std=c++0x_@@__@@__@@_
-Linker=-lmingw32 -lSDL2main -lSDL2  -lSDL2_ttf_@@_force3D/maths/vector.a_@@_force3D/maths/matrix.a_@@_force3D/collision/libboundingBox.a_@@_force3D/entities/camera/libcamera.a_@@_force3D/loader/libloader.a_@@_force3D/gameEngine/libgameLoop.a_@@_force3D/entities/object/libobject.a_@@_force3D/gameEngine/libCopyBuffer.a_@@_force3D/pixel/libdrawPixels.a_@@_force3D/pixel/libpixel.a_@@_force3D/entities/sky/libsky.a_@@_force3D/entities/heightmap/libheightmap.a_@@_
+Linker=-lmingw32 -lSDL2main -lSDL2  -lSDL2_ttf -lSDL2_Image_@@_force3D/maths/vector.a_@@_force3D/maths/matrix.a_@@_force3D/collision/libboundingBox.a_@@_force3D/entities/camera/libcamera.a_@@_force3D/loader/libloader.a_@@_force3D/gameEngine/libgameLoop.a_@@_force3D/entities/object/libobject.a_@@_force3D/gameEngine/libCopyBuffer.a_@@_force3D/pixel/libdrawPixels.a_@@_force3D/pixel/libpixel.a_@@_force3D/entities/sky/libsky.a_@@_force3D/entities/heightmap/libheightmap.a_@@_force3D/entities/raceTrack/libracetrack.a_@@_force3D/entities/captureVideo/libcaptureVideo.a_@@_force3D/entities/sound/libsound.a_@@_force3D/entities/captureSound/libcaptureSound.a_@@_
 IsCpp=1
 Icon=
 ExeOutput=
@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=25
+UnitCount=31
 
 [VersionInfo]
 Major=1
@@ -61,7 +61,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit13]
-FileName=common\GUI.cpp
+FileName=common\composant_vehicule.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -71,7 +71,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
-FileName=common\boundingBox.hpp
+FileName=common\collisionDetection.hpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -111,7 +111,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit14]
-FileName=common\composant_vehicule.hpp
+FileName=common\heightmap.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -121,26 +121,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit18]
-FileName=common\camera.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit19]
-FileName=common\camera.hpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit20]
 FileName=common\vehicules.cpp
 CompileCpp=1
 Folder=
@@ -150,7 +130,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit21]
+[Unit19]
 FileName=common\vehicules.hpp
 CompileCpp=1
 Folder=
@@ -160,17 +140,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit23]
-FileName=common\vehiculesAI.hpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit22]
+[Unit20]
 FileName=common\vehiculesAI.cpp
 CompileCpp=1
 Folder=
@@ -180,7 +150,17 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit25]
+[Unit21]
+FileName=common\vehiculesAI.hpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit23]
 FileName=common\decor.hpp
 CompileCpp=1
 Folder=
@@ -190,8 +170,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit26]
-FileName=common\composant_vehicule.cpp
+[Unit22]
+FileName=common\decor.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -201,17 +181,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit27]
-FileName=common\decor.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit29]
-FileName=common\pixel.hpp
+FileName=common\captureVideos.hpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -221,7 +191,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit30]
-FileName=common\composant_vehicule.cpp
+FileName=common\captureSound.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -241,7 +211,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit12]
-FileName=common\GUI.hpp
+FileName=common\composant_vehicule.hpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -261,7 +231,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit17]
-FileName=common\heightmap.hpp
+FileName=common\camera.hpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -271,7 +241,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit31]
-FileName=common\decor.h
+FileName=common\captureSound.hpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -290,18 +260,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit7]
-FileName=common\racetrack.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit11]
-FileName=common\collisionDetection.cpp
+FileName=common\GUI.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -311,7 +271,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit9]
-FileName=common\boundingBox.cpp
+FileName=common\collisionDetection.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -321,17 +281,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit10]
-FileName=common\collisionDetection.hpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit24]
-FileName=common\decor.cpp
+FileName=common\GUI.hpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -341,17 +291,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit15]
-FileName=common\composant_vehicule.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit6]
-FileName=common\racetrack.hpp
+FileName=common\heightmap.hpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -361,7 +301,77 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit16]
-FileName=common\heightmap.cpp
+FileName=common\camera.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit6]
+FileName=common\boundingBox.hpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit7]
+FileName=common\boundingBox.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit24]
+FileName=common\racetrack.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit25]
+FileName=common\racetrack.hpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit26]
+FileName=common\captureVideos.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit28]
+FileName=common\sounds.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit29]
+FileName=common\sounds.hpp
 CompileCpp=1
 Folder=
 Compile=1

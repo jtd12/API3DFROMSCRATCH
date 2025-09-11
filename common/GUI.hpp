@@ -36,7 +36,10 @@ class Button {
 	Button(SDL_Rect rect_,const std::string& text_, TTF_Font* font_, SDL_Color color_);
 	~Button();
     void render(SDL_Renderer* renderer);
+    void render(Uint32* framebuffer, int WIDTH, int HEIGHT);
     void renderPanel(SDL_Renderer* renderer);
+    void renderPanel(Uint32* framebuffer, int WIDTH, int HEIGHT);
+    void renderText(Uint32* framebuffer, int WIDTH, int HEIGHT);
     void renderText(SDL_Renderer* renderer);
     void handleEvent(SDL_Event& event);
     bool getClick();

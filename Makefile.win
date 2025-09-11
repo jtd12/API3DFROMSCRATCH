@@ -4,11 +4,11 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o gameSetup.o common/skybox.o common/racetrack.o common/boundingBox.o common/collisionDetection.o common/GUI.o common/composant_vehicule.o common/heightmap.o common/camera.o common/vehicules.o common/vehiculesAI.o common/decor.o
-LINKOBJ  = main.o gameSetup.o common/skybox.o common/racetrack.o common/boundingBox.o common/collisionDetection.o common/GUI.o common/composant_vehicule.o common/heightmap.o common/camera.o common/vehicules.o common/vehiculesAI.o common/decor.o
-LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -L"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/lib" -L"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/lib" -lmingw32 -lSDL2main -lSDL2  -lSDL2_ttf force3D/maths/vector.a force3D/maths/matrix.a force3D/collision/libboundingBox.a force3D/entities/camera/libcamera.a force3D/loader/libloader.a force3D/gameEngine/libgameLoop.a force3D/entities/object/libobject.a force3D/gameEngine/libCopyBuffer.a force3D/pixel/libdrawPixels.a force3D/pixel/libpixel.a force3D/entities/sky/libsky.a force3D/entities/heightmap/libheightmap.a
-INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/include/SDL2" -I"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/include/SDL2"
-CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++" -I"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/include/SDL2" -I"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/include/SDL2"
+OBJ      = main.o gameSetup.o common/skybox.o common/boundingBox.o common/collisionDetection.o common/GUI.o common/composant_vehicule.o common/heightmap.o common/camera.o common/vehicules.o common/vehiculesAI.o common/decor.o common/racetrack.o common/captureVideos.o common/sounds.o common/captureSound.o
+LINKOBJ  = main.o gameSetup.o common/skybox.o common/boundingBox.o common/collisionDetection.o common/GUI.o common/composant_vehicule.o common/heightmap.o common/camera.o common/vehicules.o common/vehiculesAI.o common/decor.o common/racetrack.o common/captureVideos.o common/sounds.o common/captureSound.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -L"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/lib" -L"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/lib" -L"C:/library/SDL_Image 2.0/lib" -L"C:/library/SDL2_mixer-2.5.3/x86_64-w64-mingw32/lib" -lmingw32 -lSDL2main -lSDL2  -lSDL2_ttf -lSDL2_Image force3D/maths/vector.a force3D/maths/matrix.a force3D/collision/libboundingBox.a force3D/entities/camera/libcamera.a force3D/loader/libloader.a force3D/gameEngine/libgameLoop.a force3D/entities/object/libobject.a force3D/gameEngine/libCopyBuffer.a force3D/pixel/libdrawPixels.a force3D/pixel/libpixel.a force3D/entities/sky/libsky.a force3D/entities/heightmap/libheightmap.a force3D/entities/raceTrack/libracetrack.a force3D/entities/captureVideo/libcaptureVideo.a force3D/entities/sound/libsound.a force3D/entities/captureSound/libcaptureSound.a
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/include/SDL2" -I"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/include/SDL2" -I"C:/library/SDL_Image 2.0/include/SDL2" -I"C:/library/SDL2_mixer-2.5.3/x86_64-w64-mingw32/include/SDL2"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++" -I"C:/library/SDL2-2.0.12/x86_64-w64-mingw32/include/SDL2" -I"C:/library/SDL2_ttf-2.19.3/x86_64-w64-mingw32/include/SDL2" -I"C:/library/SDL_Image 2.0/include/SDL2" -I"C:/library/SDL2_mixer-2.5.3/x86_64-w64-mingw32/include/SDL2"
 BIN      = Projet1.exe
 CXXFLAGS = $(CXXINCS) -std=c++0x
 CFLAGS   = $(INCS) 
@@ -32,9 +32,6 @@ gameSetup.o: gameSetup.cpp
 
 common/skybox.o: common/skybox.cpp
 	$(CPP) -c common/skybox.cpp -o common/skybox.o $(CXXFLAGS)
-
-common/racetrack.o: common/racetrack.cpp
-	$(CPP) -c common/racetrack.cpp -o common/racetrack.o $(CXXFLAGS)
 
 common/boundingBox.o: common/boundingBox.cpp
 	$(CPP) -c common/boundingBox.cpp -o common/boundingBox.o $(CXXFLAGS)
@@ -62,3 +59,15 @@ common/vehiculesAI.o: common/vehiculesAI.cpp
 
 common/decor.o: common/decor.cpp
 	$(CPP) -c common/decor.cpp -o common/decor.o $(CXXFLAGS)
+
+common/racetrack.o: common/racetrack.cpp
+	$(CPP) -c common/racetrack.cpp -o common/racetrack.o $(CXXFLAGS)
+
+common/captureVideos.o: common/captureVideos.cpp
+	$(CPP) -c common/captureVideos.cpp -o common/captureVideos.o $(CXXFLAGS)
+
+common/sounds.o: common/sounds.cpp
+	$(CPP) -c common/sounds.cpp -o common/sounds.o $(CXXFLAGS)
+
+common/captureSound.o: common/captureSound.cpp
+	$(CPP) -c common/captureSound.cpp -o common/captureSound.o $(CXXFLAGS)

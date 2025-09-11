@@ -11,14 +11,80 @@ game=new gameLoop();
 
 setup::~setup()
 {
+delete capture_video;
+delete capture_sound;
+delete car;
 
+for(int i=0;i<vehicule.size();i++)
+ delete vehicule[i];
+ 
+ for(int i=0;i<allCarsAI.size();i++)
+ {
+ 	delete allCarsAI[i];
+ }
+ 
+  for(int i=0;i<vehiculeAI.size();i++)
+ {
+ 	delete vehiculeAI[i];
+ }
+
+delete collid;
+
+for(int i=0;i<myButton.size();i++)
+ { 
+ delete myButton[i];
+}
+
+	delete pannel;
+	
+	for(int i=0;i< text.size();i++)
+	{
+		delete text[i];
+	}
+	
+	delete carAABB;
+	delete race;
+	
+	for(int i=0;i< cubes.size();i++)
+	{
+	 delete cubes[i];
+	}
+	
+	for(int i=0;i< arbres.size();i++)
+	{
+	 delete arbres[i];
+	}
+	
+	for(int i=0;i< triangles.size();i++)
+	{
+	 delete triangles[i];
+	}
+	
+	for(int i=0;i< animals.size();i++)
+	{
+	 delete animals[i];
+	}
+
+	for(int i=0;i< cylindres.size();i++)
+	{
+	 delete cylindres[i];
+	}
+	
+	delete  camera;
+	delete  height;
+	delete game;
+	delete pixel;
+	delete sky;
+	delete buffer;
+	delete sounds;
+	delete sounds2;
 }
 
 void setup::init()
 {
 
 
-	std::vector<vector3d> waypoints = {
+waypoints = {
     {5000, 1100, -1000}, {1000, 1000, -6700}, {-3000, 2000, -4000},{3000, 2000, 13000}, {-5000, 800, 14000}, {-27000,1000,12000},{-35000,1000,8000},{-41000,1000,7000},{-42000,1000,-2000},{8000, 1100, -12500}
     ,{18000, 1100, -9000},{30000, 1100, 1000},{31000, 1100, 4000},{33000, 1100, 15000},{34000, 1100, 15900},{32500, 1100, 22000},{22000, 1100, 45000},{20000, 1100, 50000},{18000, 1100, 55000},{5000, 1100, 65000},
  
@@ -30,7 +96,7 @@ controlPoints = {
         // répétition du premier
       // optionnel : pour continuité Catmull-Rom // Fermeture
 };
-race=new raceTrack();
+race=new raceTrackSetup();
 
 height=new heightmapsetup();
 	
@@ -41,11 +107,10 @@ for (auto& p : controlPoints) {
 }
 
 
-race->initializeTrack(controlPoints, 70, 3400.0f,*height); // Générer la piste
+race->initializeTrack(controlPoints, 70, 3400.0f,*height->getHeight()); // Générer la piste
 
-trackTriangles = race->generateTrackMesh(race->trackEdges,10.0f);
-borderTriangles = race->generateTrackBorders(race->trackEdgesElevated,*height,TERRAINHEIGHT,TERRAINSIZE-9900,20);
-//terrainTriangles = race->generateTerrain(150000, 150000, 100);
+trackTriangles = race->generateTrackMesh(race->getRace()->trackEdges,10.0f);
+borderTriangles = race->generateTrackBorders(race->getRace()->trackEdgesElevated,*height->getHeight(),TERRAINHEIGHT,TERRAINSIZE-9900,20);
 
 	collid=new collisions();
 	carAABB=new AABB();
@@ -66,17 +131,17 @@ if (!font) {
 
 SDL_Color white = {255, 255, 255};
 
- myButton.push_back( new Button({30, 650, 100, 45}, "avancer", font, white));
- myButton.push_back( new Button({180, 650, 100, 45}, "reculer", font, white));
+ myButton.push_back( new Button({30, 550, 100, 45}, "avancer", font, white));
+ myButton.push_back( new Button({180, 550, 100, 45}, "reculer", font, white));
 
 
-pannel=new Button({0, 650, 800, 100});
+	pannel=new Button({0, 550, 400, 45});
 
 
 
 	car=new vehiculesetup();
 	
-	car->init(vehicule,vector3d(6000,1800,15000),vector3d(0,0,0),vector3d(50,50,50));
+	car->init(vehicule,vector3d(6000,1800,15000),vector3d(0,0,0),vector3d(100,100,100));
 	
 
 	
@@ -91,10 +156,21 @@ pannel=new Button({0, 650, 800, 100});
 
 	srand((unsigned)time(0));
 
-for (int i=0; i<9; i++) {
+for (int i=0; i<7; i++) {
+	
         std::string filename = filenames[i % filenames.size()];  // cycle des modèles
         mesh* sharedMesh = ModelManager::getModel(filename);
-
+		
+		if (!sharedMesh) {
+	    std::cerr << "Erreur chargement modèle: " << filename << std::endl;
+	    continue;
+		}
+	    
+		if (waypoints.empty()) {
+		    std::cerr << "Erreur: aucun waypoint défini !" << std::endl;
+		    return;
+		}
+		
         int startIndex = rand() % waypoints.size();
       //  vector3d startPos = waypoints[startIndex];
 
@@ -111,7 +187,7 @@ for (int i=0; i<9; i++) {
 
 	sky=new skybox();
 	
-int numCubes = 50;  // nombre de cubes
+int numCubes = 100;  // nombre de cubes
 float minX = -75000.0f;
 float maxX = 75000.0f;
 float minZ = -75000.0f;
@@ -123,7 +199,7 @@ while (cubesCreated < numCubes) {
     float x = minX + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxX - minX);
     float z = minZ + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxZ - minZ);
 	
-	if (!race || race->trackEdges.empty()) {
+	if (!race->getRace() || race->getRace()->trackEdges.empty()) {
     std::cerr << "Erreur : piste non initialisée" << std::endl;
     return;
 }
@@ -131,11 +207,11 @@ while (cubesCreated < numCubes) {
     if (race->isPointOnTrack(x, z)) continue;
 
     float y = height->getHeightAt(x, z, TERRAINHEIGHT, TERRAINSIZE-9900);
-    vector3d pos(x, y+100, z);
+    vector3d pos(x, y - 1000, z);
 
     float randAngle = static_cast<float>(rand() % 360);
     float scaleX = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 50.0f;
-    float scaleY = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 100.0f;
+    float scaleY = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 80.0f;
     float scaleZ = 50.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 70.0f;
 
     decorSetup* newCube = new decorSetup(pos, vector3d(0, randAngle, 0),vector3d(scaleX,scaleY,scaleZ), "data/cubes.obj");
@@ -144,13 +220,13 @@ while (cubesCreated < numCubes) {
 }
 
 
-int numArbres = 50;  // nombre de cubes
+int numArbres = 100;  // nombre de cubes
 int arbresCreated = 0;
 while (arbresCreated < numArbres) {
     float x = minX + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxX - minX);
     float z = minZ + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxZ - minZ);
 	
-	if (!race || race->trackEdges.empty()) {
+	if (!race->getRace() || race->getRace()->trackEdges.empty()) {
     std::cerr << "Erreur : piste non initialisée" << std::endl;
     return;
 }
@@ -158,7 +234,7 @@ while (arbresCreated < numArbres) {
     if (race->isPointOnTrack(x, z)) continue;
 
     float y = height->getHeightAt(x, z, TERRAINHEIGHT, TERRAINSIZE-9900);
-    vector3d pos(x, y + 100, z);
+    vector3d pos(x, y - 1000, z);
 
     float randAngle = static_cast<float>(rand() % 360);
     float scaleX = 300.0f;
@@ -171,13 +247,13 @@ while (arbresCreated < numArbres) {
 }
 
 	
-int numTriangles = 150;  // nombre de cubes
+int numTriangles = 120;  // nombre de cubes
 int trianglesCreated = 0;
 while (trianglesCreated < numTriangles) {
     float x = minX + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxX - minX);
     float z = minZ + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxZ - minZ);
 	
-	if (!race || race->trackEdges.empty()) {
+	if (!race->getRace() || race->getRace()->trackEdges.empty()) {
     std::cerr << "Erreur : piste non initialisée" << std::endl;
     return;
 }
@@ -185,7 +261,7 @@ while (trianglesCreated < numTriangles) {
     if (race->isPointOnTrack(x, z)) continue;
 
     float y = height->getHeightAt(x, z, TERRAINHEIGHT, TERRAINSIZE-9900);
-    vector3d pos(x, y + 100, z);
+    vector3d pos(x, y - 1000, z);
 
     float randAngle = static_cast<float>(rand() % 360);
     float scaleX = 300.0f;
@@ -197,13 +273,13 @@ while (trianglesCreated < numTriangles) {
     trianglesCreated++;
 }
 
-int numAnimal = 100;  // nombre de cubes
+int numAnimal = 50;  // nombre de cubes
 int animalCreated = 0;
 while (animalCreated < numAnimal) {
     float x = minX + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxX - minX);
     float z = minZ + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxZ - minZ);
 	
-	if (!race || race->trackEdges.empty()) {
+	if (!race->getRace() || race->getRace()->trackEdges.empty()) {
     std::cerr << "Erreur : piste non initialisée" << std::endl;
     return;
 }
@@ -211,7 +287,7 @@ while (animalCreated < numAnimal) {
     if (race->isPointOnTrack(x, z)) continue;
 
     float y = height->getHeightAt(x, z, TERRAINHEIGHT, TERRAINSIZE-9900);
-    vector3d pos(x, y + 100, z);
+    vector3d pos(x, y - 1000, z);
 
     float randAngle = static_cast<float>(rand() % 360);
     float scaleX = 300.0f;
@@ -223,21 +299,73 @@ while (animalCreated < numAnimal) {
     animalCreated++;
 }
 
-text.push_back(new Button({400, 650, 100, 45}, "Vitesse: " + std::to_string(car->getSpeed()) + "km/h", font, white));
+int numCyl = 100;  // nombre de cubes
+int cylCreated = 0;
+while (cylCreated < numCyl) {
+    float x = minX + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxX - minX);
+    float z = minZ + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (maxZ - minZ);
+	
+	if (!race->getRace() || race->getRace()->trackEdges.empty()) {
+    std::cerr << "Erreur : piste non initialisée" << std::endl;
+    return;
+}
 
-text.push_back(new Button({100, 550, 100, 45},"Car1 Speed: " + std::to_string(allCarsAI[0]->getSpeed()/3) + "km/h" , font, white));
-text.push_back(new Button({100, 500, 100, 45},"Car2 Speed: " + std::to_string(allCarsAI[1]->getSpeed()/3) + "km/h" , font, white));
-text.push_back(new Button({100, 450, 100, 45},"Car3 Speed: " + std::to_string(allCarsAI[2]->getSpeed()/3) + "km/h" , font, white));
-text.push_back(new Button({100, 400, 100, 45},"Car4 Speed: " + std::to_string(allCarsAI[3]->getSpeed()/3) + "km/h" , font, white));
-text.push_back(new Button({100, 350, 100, 45},"Car5 Speed: " + std::to_string(allCarsAI[4]->getSpeed()/3) + "km/h" , font, white));
-text.push_back(new Button({100, 300, 100, 45},"Car6 Speed: " + std::to_string(allCarsAI[5]->getSpeed()/3) + "km/h" , font, white));
-text.push_back(new Button({100, 250, 100, 45},"Car7 Speed: " + std::to_string(allCarsAI[6]->getSpeed()/3) + "km/h" , font, white));
-text.push_back(new Button({100, 200, 100, 45},"Car8 Speed: " + std::to_string(allCarsAI[7]->getSpeed()/3) + "km/h" , font, white));
-text.push_back(new Button({100, 150, 100, 45},"Car9 Speed: " + std::to_string(allCarsAI[8]->getSpeed()/3) + "km/h" , font, white));
+    if (race->isPointOnTrack(x, z)) continue;
+
+    float y = height->getHeightAt(x, z, TERRAINHEIGHT, TERRAINSIZE-9900);
+    vector3d pos(x, y - 1000, z);
+
+    float randAngle = static_cast<float>(rand() % 360);
+    float scaleX = 300.0f;
+    float scaleY = 300.0f;
+    float scaleZ = 300.0f;
+
+    decorSetup* newCyl = new decorSetup(pos, vector3d(0, randAngle, 0),vector3d(scaleX,scaleY,scaleZ), "data/singes.obj");
+    cylindres.push_back(newCyl);
+    cylCreated++;
+}
+
+text.push_back(new Button({350, 500, 100, 45}, "Vitesse: " + std::to_string(car->getSpeed()) + "km/h", font, white));
+
+text.push_back(new Button({100, 400, 100, 45},"Car1 Speed: " + std::to_string(allCarsAI[0]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 350, 100, 45},"Car2 Speed: " + std::to_string(allCarsAI[1]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 300, 100, 45},"Car3 Speed: " + std::to_string(allCarsAI[2]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 250, 100, 45},"Car4 Speed: " + std::to_string(allCarsAI[3]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 200, 100, 45},"Car5 Speed: " + std::to_string(allCarsAI[4]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100, 150, 100, 45},"Car6 Speed: " + std::to_string(allCarsAI[5]->getSpeed()/3) + "km/h" , font, white));
+text.push_back(new Button({100,  100, 100, 45},"Car7 Speed: " + std::to_string(allCarsAI[6]->getSpeed()/3) + "km/h" , font, white));
 
 temps=50;
 
 text.push_back(new Button({500, 500, 100, 45}, std::to_string(temps) , font, white));
+
+capture_video=new captureVideoSetup();
+
+capture_sound=new captureSoundSetup();
+
+recording=true;
+// démarre la capture immédiatement
+if (!capture_sound->start("capture/capture.wav", 44100, 2)) {
+    std::cerr << "Impossible de démarrer la capture audio" << std::endl;
+    return;
+}
+
+std::cout << "Capture audio démarrée automatiquement..." << std::endl;
+
+sounds=new soundSetup();
+
+sounds2=new soundSetup();
+
+if(sounds->initAudio()){}
+
+sounds->loadSoundMus("data/sound/Radio_Flyer.mp3");
+sounds->playSoundMus();
+
+if(sounds2->initAudio()){}
+
+sounds2->loadSoundWav("data/sound/vehicule.wav");
+
+
 	
 }
 
@@ -268,24 +396,91 @@ void setup::gestionEvents(setup* g)
 void setup::update(SDL_Renderer* renderer)
 {
   
-    text[0]->setText("Vitesse: " + std::to_string((int)car->getSpeed()) + "km/h",game->getRenderer());
+    text[0]->setText("Vitesse: " + std::to_string((int)car->getSpeed()/3) + "km/h",game->getRenderer());
     
     for (size_t i = 0; i < allCarsAI.size(); ++i) {
     int speedInt = static_cast<int>(std::round(allCarsAI[i]->getSpeed()/3)); // arrondi
     text[i+1]->setText(std::string("Car Speed: ") + std::to_string(speedInt) + " km/h", renderer);
-    
-    text[10]->setText("temps: " + std::to_string((int)temps) ,renderer);
+}
+	
+	for(int i=8;i<text.size();i++){
+    text[i]->setText("temps: " + std::to_string((int)temps) ,renderer);
+	}	
+
+
 }
 
+bool setup::checkCollision(vehiculesAISetup* a, vehiculesetup* b) {
+    float dx = a->getPosition().x - b->getPosition().x;
+    float dy = a->getPosition().y - b->getPosition().y;
+    float dz = a->getPosition().z - b->getPosition().z;
+
+    float dist2 = dx*dx + dy*dy + dz*dz;
+    float radiusSum = a->getRadius() + b->getRadius();
+
+    return dist2 < (radiusSum * radiusSum);
 }
 
+bool setup::checkCollision(vehiculesAISetup* a, vehiculesAISetup* b) {
+    float dx = a->getPosition().x - b->getPosition().x;
+    float dy = a->getPosition().y - b->getPosition().y;
+    float dz = a->getPosition().z - b->getPosition().z;
 
+    float dist2 = dx*dx + dy*dy + dz*dz;
+    float radiusSum = a->getRadius() + b->getRadius();
+
+    return dist2 < (radiusSum * radiusSum);
+}
 
 
 void setup::update(setup* g)
 {
+
+	for (int i = 0; i < allCarsAI.size(); i++) {
+	    for (int j = i + 1; j < allCarsAI.size(); j++) {
+	        if (checkCollision(allCarsAI[i], allCarsAI[j])) {
+	            // réaction simple : séparer les voitures
+	            vector3d dir = allCarsAI[i]->getPosition() - allCarsAI[j]->getPosition();
+	            dir.normalize();
+	            allCarsAI[i]->setLocationInc(dir * 1.0f);
+	            allCarsAI[j]->setLocationInc(vector3d(-dir.x,-dir.y,-dir.z) * 1.0f);
 	
-	pannel->setFillColor(vector3d(25,195,155));
+	            // optionnel : ralentir leur vitesse
+	            allCarsAI[i]->setSpeed(allCarsAI[i]->getSpeed() * 0.8f);
+	            allCarsAI[j]->setSpeed(allCarsAI[j]->getSpeed() * 0.8f);
+	        }
+	    }
+	}
+	
+	
+		for (int i = 0; i < allCarsAI.size(); i++)
+		{
+			if (checkCollision(allCarsAI[i], car)) {
+				
+				vector3d dir = allCarsAI[i]->getPosition() - car->getPosition();
+	            dir.normalize();
+	            allCarsAI[i]->setLocationInc(dir * 1.0f);
+	            car->setLocationInc(vector3d(-dir.x,-dir.y,-dir.z)* 1.0f);
+	            
+	            allCarsAI[i]->setSpeed(allCarsAI[i]->getSpeed() * 0.8f);
+	            car->setSpeed(car->getSpeed()*0.8f);
+			}
+		}
+	
+	vector3d forward = car->getForwardVector();       // direction avant de la voiture
+	vector3d displacement = forward * car->getSpeed();      // vecteur de déplacement actuel
+	float dot = displacement.dotproduct(forward);
+	
+	  auto carRot = car->getRotation(); 
+	if (!race->getRace()->isInsideTrack(car->getPosition(), race->getRace()->trackEdges)) {
+		vector3d newPos = race->getRace()->getClosestWaypoint(car->getPosition(),controlPoints);
+		car->setLocation(newPos);
+   	 //	car->setSpeed(0.0f); // stopper la voiture
+ 		car->setRotation(carRot);  // réappliquer l'orientation
+	}
+	
+
+	pannel->setFillColor(vector3d(5,255,5));
 	
 	if(myButton[0]->getClick())
 	{
@@ -308,6 +503,8 @@ void setup::update(setup* g)
 	{
 		myButton[1]->setColor(vector3d(150,150,150));
 	}
+	
+	 GPITCH = 1.0f + (-car->getSpeed()/4000);
 	
 
  if(temps>0)
@@ -349,7 +546,7 @@ void setup::update(setup* g)
 	
 	for (int i = 0; i < allCarsAI.size(); i++) 
 	{
-			allCarsAI[i]->update();
+		
 			allCarsAI[i]->setGravity();
 	}
 
@@ -373,9 +570,15 @@ if(temps<=0)
 	    lastSpeedChangeTime = currentTime; // reset du timer
 	}	
 
-	car->update(vehicule);
+	car->update();
 	
-	if(car->getSpeed()<0.0f && car->getSpeed()>-200)
+	for (int i = 0; i < allCarsAI.size(); i++) 
+	{
+			allCarsAI[i]->update();
+		
+	}
+	
+/*	if(car->getSpeed()<0.0f && car->getSpeed()>-200)
 		{
 		
 		 car->setUp(false);
@@ -383,7 +586,7 @@ if(temps<=0)
 
 		 
 		}
-	
+	*/
 	if( car->getSpeed()<=0.5f && car->getKeyC())
 	{
 		   	  
@@ -411,7 +614,12 @@ if(temps<=0)
 	 if(car->getDown() && car->getControlActif2())
 	{
 			
-            car->controlUp();
+            car->controlDown();
+	}
+	
+	if(car->getFrein())
+	{
+		car->controlFrein();
 	}
 	
 	 if(car->getRight() )
@@ -433,7 +641,10 @@ if(temps<=0)
 	{
 			car->passiveControlUp_Down();
 	}
+
+
 	
+bool collisionBord = false;
 
 for (const auto& triangle : borderTriangles)
 {
@@ -442,34 +653,43 @@ for (const auto& triangle : borderTriangles)
     vector3d v3 = triangle[2];
     
 	if (collid->aabbIntersectsTriangle(*carAABB, v1, v2, v3)) {
-		  
-		 
-	car->setSpeed(-55.0f);
+		  collisionBord = true;
+		  break;
+	}
+}
+
+if (collisionBord) {
+   if (dot > 0) {
+        vector3d reverseDir = vector3d(-forward.x,-forward.y,-forward.z); // direction opposée
+        car->setLocationInc(reverseDir * fabs(car->getSpeed()) * -3.5f);
+        car->setSpeed(car->getSpeed() * 0.5f); // ralentir
+    }
+    // Si recule
+    else if (dot < 0) {
+        vector3d reverseDir = forward; // dans ce cas, on pousse vers l’avant
+        car->setLocationInc(reverseDir * fabs(car->getSpeed()) * -3.5f);
+        car->setSpeed(car->getSpeed() * 0.5f);
+    }
+}
 		
 
     //carVelocity = carVelocity * -0.5f; // Appliquer un rebond simple
 }
 
+for (const auto& triangle : borderTriangles)
+{
+	vector3d v1 = triangle[0];
+    vector3d v2 = triangle[1];
+    vector3d v3 = triangle[2];
+    
+    
 	if (collid->aabbIntersectsTriangle(*carAABB, v1, v2, v3)==false) {
 		
-	if( car->getControlActif())
-	{
-		if(car->getUp())
-	{
-		car->setDir(1);
-	}
-}
 
-if( car->getControlActif2())
-	{
-		if(car->getDown())
-	{
-			car->setDir(-1);
-	}
-	}
 	}
 
-}
+
+
 }
 
 
@@ -529,6 +749,16 @@ void setup::processInput(SDL_Event event)
 	  myButton[i]->handleEvent(event);
 	
 
+ if (event.type == SDL_QUIT) {
+            // arrêt automatique de l'enregistrement
+            if (recording) {
+                recording = false;
+                capture_sound->stop();
+                std::cout << "Enregistrement arrêté automatiquement à la fermeture." << std::endl;
+            }
+            
+        }
+        
 	  if (event.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_LEFT) 
                 {
@@ -584,13 +814,14 @@ void setup::processInput(SDL_Event event)
                     if (event.key.keysym.sym == SDLK_SPACE) 
                 {
                 		//update(-0.5f);
-                		car->controlFrein();
+                		car->setFrein(true);
                 	}
                 	
-                	
+               
+        }
+    
                 
-                
-            }
+            
             	 if (event.type == SDL_KEYUP) {
             	 	
             	 	  if (event.key.keysym.sym == SDLK_LEFT) 
@@ -614,6 +845,12 @@ void setup::processInput(SDL_Event event)
                 {
                 		//update(-0.5f);
                 			car->setDown(false);
+                	}
+                	
+                	   if (event.key.keysym.sym == SDLK_SPACE) 
+                {
+                		//update(-0.5f);
+                		car->setFrein(false);
                 	}
                 	
                 	
@@ -743,6 +980,12 @@ for (auto* d : animals) {
 }
 }
 
+for (auto* d : cylindres) {
+		if (d->isInViewFrustum(carSimple)) {
+    d->draw(allTriangles, renderer, screenWidth, screenHeight, camera);
+}
+}
+
 
 }
 
@@ -763,6 +1006,8 @@ bool setup::isTriangleVisible(const vector3d& normal, const vector3d& cameraPosi
 
 void setup::draw()
 {
+	
+		
 	 std::vector<Triangle> playerTriangles;
 	 std::vector<Triangle> playerAITriangles;
 	 std::vector<Triangle> objectTriangles;
@@ -798,7 +1043,7 @@ void setup::draw()
 	    		vector3d normal = computeNormal(tri[0], tri[1], tri[2]);
 	    		
       //	if (isTriangleVisible(normal, car.getPosition(), tri[0]))
-	    race->drawTriangle(allTriangles, pixel->getPixel(), framebuffer, framebufferDepth, 800, 600, tri[0], tri[1], tri[2], *camera,true,false);
+	    race->drawTriangle(allTriangles, pixel->getPixel(), framebuffer, framebufferDepth, 800, 600, tri[0], tri[1], tri[2], *camera->getCamera(),true,false);
 	
 }
 	
@@ -807,16 +1052,10 @@ for (const auto& tri : borderTriangles) {
 		vector3d normal = computeNormal(tri[0], tri[1], tri[2]);
       //	if (isTriangleVisible(normal, car.getPosition(), tri[0]))
     race->drawTriangle(allTriangles, pixel->getPixel(), framebuffer, framebufferDepth, 800, 600, 
-                 tri[0], tri[1], tri[2], *camera, false,true);
+                 tri[0], tri[1], tri[2], *camera->getCamera(), false,true);
 
 }
 	
-	for (auto& tri : terrainTriangles) {
-			vector3d normal = computeNormal(tri[0], tri[1], tri[2]);
-     //	if (isTriangleVisible(normal, car.getPosition(), tri[0])) {
-	//    race->drawTriangle(allTriangles, pixel->getPixel(), framebuffer, framebufferDepth, 800, 600, tri[0], tri[1], tri[2], *camera,false,false);
-
-}
 	
 	height->draw(allTriangles,game->getRenderer(), WIDTH, HEIGHT , camera, pixel, framebuffer, framebufferDepth);
 
@@ -826,29 +1065,45 @@ for (const auto& tri : borderTriangles) {
     
     pixel->draw( objectTriangles,framebuffer,framebufferDepth, WIDTH, HEIGHT,  *camera->getCamera(),car->getPosition(),true);
     
-	
-	buffer->updateTexture(game->getRenderer(),texture,framebuffer,WIDTH);
-	
-	pannel->renderPanel(game->getRenderer());
     
-	for(int i=0;i<text.size()-1;i++)	
-     text[i]->renderText(game->getRenderer());
-     
-    if(temps>0)
-    {
-       text[10]->renderText(game->getRenderer());	
-	}
-     
-
+    pannel->renderPanel(framebuffer, WIDTH, HEIGHT);
+    
     for(int i=0;i<myButton.size();i++)
     {
-     myButton[i]->render(game->getRenderer());
+     myButton[i]->render(framebuffer, WIDTH, HEIGHT);
     
     if (myButton[i]->getClick()) {
         printf("Bouton cliqué !\n");
         myButton[i]->setClick(false); // Réinitialiser
      }
  }
+ 
+ 	for(int i=0;i<8;i++)	
+      text[i]->renderText(framebuffer, WIDTH, HEIGHT);
+     
+     
+   if(temps>0)
+    {
+    	for(int i=8;i<text.size();i++){
+         text[i]->renderText(framebuffer, WIDTH, HEIGHT);
+		}
+	}
+     
+ 
+	/*capture_video->update(framebuffer,game->getRenderer(),WIDTH,HEIGHT,1);
+
+	if (recording) {
+    	int samplesPerFrame = capture_sound->getCaptureSound()->header.sampleRate / 30; // 44100/30 = 1470 échantillons
+    	capture_sound->captureSegment(samplesPerFrame);
+    }*/
+
+	buffer->updateTexture(game->getRenderer(),texture,framebuffer,WIDTH);
+	
+
+    
+
+
+
  
 	buffer->destroyTexture(texture,framebuffer,framebufferDepth);
 }

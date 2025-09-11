@@ -24,7 +24,7 @@ void vehiculesetup::init(std::vector<object*>& vehicule,vector3d pos,vector3d ro
 	gravity=200.0f;
     // 4 roues par véhicule
     for (int j = 0; j < 4; ++j) {
-        wheel.push_back(new object(vector3d(0, 0, 0), vector3d(0, 0, 0), vector3d(50, 50, 50), "data/roues.obj",false));
+        wheel.push_back(new object(vector3d(0, 0, 0), vector3d(0, 0, 0), vector3d(100, 100, 100), "data/roues.obj",false));
     }
 
 
@@ -32,10 +32,10 @@ void vehiculesetup::init(std::vector<object*>& vehicule,vector3d pos,vector3d ro
 		gravity=200.0f;
 		speed=0;
 		angle=1.5f;
-		maxSpeed=rand() % 180 + 300;
-		acc=12.0f;
+		maxSpeed=rand() % 480 + 600;
+		acc=20.0f;
 		dec=3.0f;
-		turnSpeed=0.15f;
+		turnSpeed=0.25f;
 		a=vector3d(0.0,0.0,0);
 		dec2=30.0f;
 		dir=0;
@@ -47,16 +47,18 @@ void vehiculesetup::init(std::vector<object*>& vehicule,vector3d pos,vector3d ro
 		down=false;
 		right=false;
 		left=false;
+		frein=false;
+		radius=400.0f;
 
 	
 
 
 }
 
-void vehiculesetup::update(std::vector<object*>& vehicule)
+void vehiculesetup::update()
 {
 	move();
-		
+	
 	float deltaTime=1.0f;
 	s=speed;
 	rotation.y=angle;
@@ -64,14 +66,14 @@ void vehiculesetup::update(std::vector<object*>& vehicule)
 	vector3d currentPos = getPosition();
     float distanceMoved = (currentPos - lastPosition).length();
 
-    if (distanceMoved < 0.1f) {  // seuil pour voiture bloquée
+    if (distanceMoved < 1.1f) {  // seuil pour voiture bloquée
         stuckTimer += deltaTime;
     } else {
         stuckTimer = 0.0f; // reset si elle bouge
     }
 
     // 4?? Vérifie si bloquée depuis 5 secondes
-    if (stuckTimer >= 20.0f) {
+    if (stuckTimer >= 10.0f) {
         isStuck = true;
         unstuck(); // repositionne la voiture
         stuckTimer = 0.0f;
@@ -101,10 +103,10 @@ void vehiculesetup:: draw(std::vector<Triangle>& allTriangles,SDL_Renderer* rend
 }
 	
 	 vector3d wheelOffsets[4] = {
-        vector3d(150, -25, 160),  // Avant gauche
-        vector3d(-250, -25, 160), // Avant droite
-        vector3d(150, -25, -160), // Arrière gauche
-        vector3d(-250, -25, -160) // Arrière droite
+        vector3d(350, -25, 320),  // Avant gauche
+        vector3d(-450, -25, 320), // Avant droite
+        vector3d(350, -25, -320), // Arrière gauche
+        vector3d(-450, -25, -320) // Arrière droite
     };
 
 for(int j=0;j<vehicule.size();j++)
@@ -183,12 +185,32 @@ void vehiculesetup::setGravity()
 */
 }
 
+void vehiculesetup::setLocationInc(vector3d loc)
+{
+	position+=loc;
+}
+
+
+float vehiculesetup::getRadius()
+{
+		return radius;
+}
+	
+	
+void vehiculesetup::setRotation(vector3d rot)
+{
+	rotation=rot;
+}
+
 void vehiculesetup::unstuck() {
     // 1. centre du circuit
  
     // Déplacer la voiture en arrière
-    position = vector3d(6000,1700,15000);
-	angle=1.5f;
+   // position = vector3d(6000,1700,15000);
+	//angle=1.5f;
+	setLocation(vector3d(6000,1800,15000));
+	rotation.y=1.5f;
+   	setSpeed(0.0f); // stopper la voiture
     std::cout << "Unstuck: reculé de 10 unités\n";
 }
 
@@ -201,6 +223,11 @@ std::vector<Triangle> vehiculesetup:: getTriangles()
 float vehiculesetup::getSpeed()
 {
 	return speed;
+}
+
+float vehiculesetup::getMaxSpeed()
+{
+	return maxSpeed;
 }
 
 void vehiculesetup::setLocation(vector3d loc)
@@ -244,6 +271,11 @@ bool vehiculesetup::getLeft()
 	return left;
 }
 
+bool vehiculesetup::getFrein()
+{
+	return frein;
+}
+
 
 		void vehiculesetup::setUp(bool b)
 		{
@@ -264,12 +296,12 @@ bool vehiculesetup::getLeft()
 		{
 			left=b;
 		}
+		
+		void vehiculesetup::setFrein(bool b)
+		{
+			frein=b;
+		}
 
-
-	void vehiculesetup::setDir(int d)
-	{
-		dir=d;
-	}
 
 vector3d vehiculesetup::getRotation()
 {
@@ -278,30 +310,13 @@ return rotation;
 
  void vehiculesetup::move()
    {
-    position.x -= cos(rotation.y) * s *dir ;
-    position.z -= sin(rotation.y) * s *dir;
+    position.x -= cos(rotation.y) * s;
+    position.z -= sin(rotation.y) * s;
   
    }
+   
 
 
-void vehiculesetup::controlFrein()
-{
-	
-				
-				if(speed-dec2>0)
-				{
-					speed-=dec2;
-				}
-				else if(speed+dec2<0)
-				{
-					speed+=dec2;
-				}
-				else
-				{
-					speed=0;
-				}
-			
-}
 
 
 vector3d vehiculesetup::getForwardVector() const {
@@ -371,7 +386,7 @@ void vehiculesetup::controlUp()
 				//	wheel[i]->setRotationz(1.5f);
 				}
 				
-					if( speed<maxSpeed)
+		if(up==1 && speed<maxSpeed)
 			{
 			
 				if(speed<0)
@@ -385,6 +400,57 @@ void vehiculesetup::controlUp()
 				}
 			}
 			
+}
+
+
+
+void vehiculesetup::controlDown()
+{
+	
+	
+						for(int i=0;i<wheel.size();i++)
+				{
+				
+				//	wheel[i]->setRotationz(1.5f);
+				}
+				
+				if(down==1 && speed>-maxSpeed)
+			{
+				 
+				if(speed>0)
+				{
+				
+					speed-=dec;
+				}
+				else
+				{
+					speed-=acc;
+				}
+				
+			}
+			
+			
+}
+
+void vehiculesetup::controlFrein()
+{
+	if(frein)
+			{
+				
+				
+				if(speed-dec2>0)
+				{
+					speed-=dec2;
+				}
+				else if(speed+dec2<0)
+				{
+					speed+=dec2;
+				}
+				else
+				{
+					speed=0;
+				}
+			}	
 }
 
 void vehiculesetup::controlRight()
@@ -405,6 +471,7 @@ void vehiculesetup::controlRight()
 					
 
 		angle-=turnSpeed*(speed/maxSpeed);
+		speed-=10.0f;
 	
 					
 				
@@ -427,7 +494,7 @@ void vehiculesetup::controlLeft()
 					*/
 					
 					angle+=turnSpeed*(speed/maxSpeed);
-						
+					speed-=10.0f;	
 				
 				
 }
@@ -444,6 +511,8 @@ void vehiculesetup::passiveControlRight_Left()
 void vehiculesetup::passiveControlUp_Down()
 {
 	
+			if(up==0 && down==0)
+			{
 				if(speed-dec>0)
 				{
 					speed-=dec;
@@ -456,6 +525,8 @@ void vehiculesetup::passiveControlUp_Down()
 				{
 					speed=0;
 				}
+			}
+			
 			
 }
 

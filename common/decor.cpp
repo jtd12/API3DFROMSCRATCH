@@ -26,7 +26,11 @@ void decorSetup::init(vector3d pos,vector3d rot,vector3d s,const std::string& pa
 
 decorSetup::~decorSetup()
 {
-
+for(int i=0;i<decor_.size();i++)
+{
+	delete decor_[i];
+}
+delete boundingBox;
 }
 
 AABB* decorSetup::getBoundingBox()

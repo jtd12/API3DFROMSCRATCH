@@ -1,6 +1,7 @@
 #ifndef DEF_VEHICULES_HPP
 #define DEF_VEHICULES_HPP
 #include"../force3D/entities/object/object.h"
+#include"racetrack.hpp"
 #include"camera.hpp"
 
 
@@ -18,7 +19,7 @@ class vehiculesetup
  	float angle;
 	float turnSpeed;
 	float speed;
-	bool up,down,right,left,control,control2,keyC,keyV;
+	bool up,down,right,left,control,control2,frein,keyC,keyV;
 	float s;
 	float maxSpeed;	
 	std::vector<Triangle> triangles;
@@ -27,26 +28,31 @@ class vehiculesetup
     bool isStuck = false;
     int currentSegment = 1; // segment Catmull-Rom courant
     float trackT = 0.0f;    // progression [0..1] dans ce segment
+    float radius;
 	
 	public:
 		vehiculesetup();
 		~vehiculesetup();
 		void init(std::vector<object*>& vehicule,vector3d pos,vector3d rot,vector3d s);
 		bool isInViewFrustum(camerasetup* camera,std::vector<object*>& vehicule) const;
-		void update(std::vector<object*>& vehicule);
+		void update();
 		void draw(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight,std::vector<object*>& vehicule,camerasetup* camera);
 		void setAngle(float a);
+		void setLocationInc(vector3d loc);
 		void move();
 		void controlUp();
 		void controlRight();
 		void controlLeft();
 		void controlFrein();
+		void controlDown();
 		void passiveControlUp_Down();
 		void passiveControlRight_Left();
 		float getSpeed();
+		float getMaxSpeed();
 		vector3d getPosition();
 		void setLocation(float locY);
 		void setLocation(vector3d loc);
+		void setRotation(vector3d rot);
 		void setSpeed(float s);
 		void setControlActif(bool b);
 		bool getControlActif();
@@ -54,6 +60,8 @@ class vehiculesetup
 		bool getControlActif2();
 	//	vector3d getForwardVector2() const;
 		void setGravity();
+		bool getFrein();
+		void setFrein(bool b);
 		bool getKeyC();
 		bool getKeyV();
 		void setKeyC(bool b);
@@ -66,11 +74,11 @@ class vehiculesetup
 		void setDown(bool b);
 		void setRight(bool b);
 		void setLeft(bool b);
-		void setDir(int d);
 		vector3d getRotation();
 		vector3d getForwardVector() const;
 		std::vector<Triangle> getTriangles();
 		void unstuck();
+		float getRadius();
 	
 		
 };

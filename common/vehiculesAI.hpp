@@ -29,6 +29,7 @@ class vehiculesAISetup
 	float speed;
 	vector3d direction;
 	std::vector<object*> vehicule_;
+	float radius; // ex: 2.0f
 	 
 	public:
 		vehiculesAISetup(mesh* sharedMesh, const std::vector<vector3d>& waypoints,  int startIndex);
@@ -49,6 +50,9 @@ class vehiculesAISetup
 		vector3d getForwardVector() const;
 		std::vector<object*>& getObjects();
 		void applyMatrix();
+		float getRadius();
+		void setLocationInc(vector3d loc);
+
 		
 };
 #endif
