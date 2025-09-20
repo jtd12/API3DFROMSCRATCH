@@ -18,7 +18,7 @@ void vehiculesetup::init(std::vector<object*>& vehicule)
 	object* model1 = new object(vector3d(0,0,0), vector3d(0,0,0), vector3d(15,15,15), "data/voiture.obj",false);
     object* model2 = new object(vector3d(0,0,0),vector3d(0,0,0), vector3d(15,15,15), "data/voiture2.obj",false);
 
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 2; ++i) {
         vector3d pos=vector3d(-5700-(i * 5800.0f), -3000.0f,5000-(i* 400.0f));
         vector3d rot(0.0f, i * 10.0f, 0.0f);
 

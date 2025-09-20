@@ -19,7 +19,11 @@ void heightmapsetup::update()
 
 void heightmapsetup::draw(std::vector<Triangle>& allTriangles,SDL_Renderer* renderer, int screenWidth, int screenHeight, camerasetup* camera,drawPixels* pixel,Uint32* framebuffer,float* framebufferDepth)
 {
-	heightMap->drawHeight(1000,15000, pixel->getPixel(),framebuffer, framebufferDepth, screenWidth, screenHeight, *camera->getCamera());
+	float baseG = 0.5f + static_cast<float>(rand()) / RAND_MAX * 1.0f;
+    float baseR = static_cast<float>(rand()) / RAND_MAX * .5f;
+    float baseB = static_cast<float>(rand()) / RAND_MAX * .7f;
+            
+	heightMap->drawHeight(1000,15000, pixel->getPixel(),framebuffer, framebufferDepth, screenWidth, screenHeight, *camera->getCamera(),baseR,baseG,baseB);
 	
 }
 		

@@ -2,7 +2,7 @@
 
 decorsetup::decorsetup()
 {
-    for(int i=0;i<3;i++)
+    for(int i=0;i<4;i++)
 	{
 	std::string filename = "data/decor" + std::to_string(i) + ".obj";
 	std::cout<<"i:"<<std::to_string(i)<<std::endl;

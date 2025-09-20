@@ -37,7 +37,8 @@ void gameLoop::update()
 
 void gameLoop::loop()
 {
-	
+		SDL_SetWindowSize(pWindow, 1280, 720);
+		SDL_MaximizeWindow(pWindow);
 
 	  while (SDL_PollEvent(&events)) {
         

@@ -67,13 +67,21 @@ void height::loadHeightMap(const char* filename )
 */
 
 
-std::vector<Triangle> height::generateTriangles(float size, float h)
+std::vector<Triangle> height::generateTriangles(float size, float h,float r,float g,float b)
 {
     std::vector<Triangle> tris;
     tris.reserve((heights.size() - 1) * (heights[0].size() - 1) * 2);
 
-    Material mat;
-    mat.diffuseColor = vector3d(1.0f, 1.0f, 1.0f);
+    	//	float baseG = 0.5f + static_cast<float>(rand()) / RAND_MAX * 1.0f;
+          //  float baseR = static_cast<float>(rand()) / RAND_MAX * .5f;
+           // float baseB = static_cast<float>(rand()) / RAND_MAX * .7f;
+           
+           float baseG=g;
+           float baseR=r;
+           float baseB=b;
+           
+            Material mat;
+            mat.diffuseColor = vector3d(baseR, baseG, baseB);
 
     for (int i = 0; i < heights.size() - 1; i++) {
         for (int j = 0; j < heights[0].size() - 1; j++) {
@@ -90,10 +98,10 @@ std::vector<Triangle> height::generateTriangles(float size, float h)
     return tris;
 }
 
-void height::drawHeight(float size,float h,pixel* pixel_,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera)
+void height::drawHeight(float size,float h,pixel* pixel_,Uint32* framebuffer,float* framebufferDepth, int screenWidth, int screenHeight, const Camera& camera,float r,float g,float b)
 {
 	
- 	static std::vector<Triangle> terrainTris = generateTriangles(size, h);
+ 	static std::vector<Triangle> terrainTris = generateTriangles(size, h,r,g,b);
     renderTriangles(pixel_, terrainTris, framebuffer, framebufferDepth,
                     screenWidth, screenHeight, camera);
 }
@@ -125,10 +133,13 @@ void height::renderTriangles(pixel* pixel_,std::vector<Triangle>& allTriangles,U
         vector3d lightDir = vector3d(100.0f, 100.0f, 15.0f).normalize();
         float intensity = std::max(0.0f, normal.dotproduct(lightDir));
 
-        Uint8 r = std::min(255, static_cast<int>(150 * intensity));
-        Uint8 g = r;
-        Uint8 b = r;
+        vector3d baseColor = tri.material.diffuseColor;
 
+		// Appliquer l’éclairage (avec un minimum pour éviter le noir complet)
+		float r = baseColor.x * (0.3f + 0.7f * intensity*200);
+		float g = baseColor.y * (0.3f + 0.7f * intensity*200);
+		float b = baseColor.z * (0.3f + 0.7f * intensity*200);
+		
         pixel_->fillTriangle(framebuffer, framebufferDepth, 
                                          { p1.x, screenHeight - p1.y }, 
                                          { p2.x, screenHeight - p2.y }, 
@@ -142,10 +153,32 @@ void height::renderTriangles(pixel* pixel_,std::vector<Triangle>& allTriangles,U
 }
 
 
+float height::getHeightAt(float x, float z, float size, float h) {
+    int i = static_cast<int>(x / size);
+    int j = static_cast<int>(z / size);
+
+    if (i < 0 || j < 0 || i >= heights.size()-1 || j >= heights[0].size()-1)
+        return 0.0f; // en dehors de la heightmap
+
+    float fx = (x / size) - i;
+    float fz = (z / size) - j;
+
+    // interpolation bilinéaire
+    float h00 = heights[i][j] * h;
+    float h10 = heights[i+1][j] * h;
+    float h01 = heights[i][j+1] * h;
+    float h11 = heights[i+1][j+1] * h;
+
+    float h0 = h00 * (1-fx) + h10 * fx;
+    float h1 = h01 * (1-fx) + h11 * fx;
+    return h0 * (1-fz) + h1 * fz;
+}
+
 Matrix4x4& height::getTranslationMatrix()
 {
 	return translationMatrix;
 }
+
 
 
 Matrix4x4& height::getScaleMatrix()
